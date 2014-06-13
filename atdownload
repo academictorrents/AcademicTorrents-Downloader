@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+COMMONLIBS=$DIR/build/atdownload.jar:$DIR/lib/commons-io-2.4.jar
+
+java -cp $COMMONLIBS:$LIBS Main $@
+
