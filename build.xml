@@ -8,8 +8,11 @@ Joseph Paul Cohen 2013/2014
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="classpath">
-        <pathelement location="bin"/>
-        <pathelement location="lib/commons-io-2.4.jar"/>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    	
+    	<pathelement location="bin"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -30,6 +33,9 @@ Joseph Paul Cohen 2013/2014
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
+            <src path="wetorrent"/>
+            <src path="vuze"/>
+            
             <classpath refid="classpath"/>
         </javac>
     </target>
@@ -37,10 +43,8 @@ Joseph Paul Cohen 2013/2014
 
 
     <target description="Build the jar file" name="jar" depends="build">
-        
-		<mkdir dir="build"></mkdir>
+        <mkdir dir="build"></mkdir>
         <jar jarfile="build/atdownload.jar" basedir="bin"/>
-        
     </target>
 	
 
