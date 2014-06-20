@@ -36,6 +36,9 @@ public class VuzeATDownloadEngine {
 	    System.out.println("Downloading");
 	    DownloadManagerListener listener = new DownloadStateListener();
 	    manager.addListener(listener);    
+	    System.out.println(manager.getErrorDetails());
+	    new PojoExplorer(manager);
+	    PojoExplorer.pausethread();
 	    globalManager.startAllDownloads();
 	    //core.requestStop();
 

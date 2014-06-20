@@ -19,40 +19,12 @@ public class WeTorrentDownloadEngine {
 	
 	private static final int PORT = 6881;
 
-	public static void main(String[] args) throws Exception {
-		System.out.println("Welcome to the Academic Torrents Download tool!");
+	public static void download(File file) throws Exception {
+		System.out.println("Using WeTorrent Engine");
 
-		
-        // read torrent filename from command line arg
-        String filename = args[0];
 
-        // Parse the metafile
-        //final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(new File(filename))));
-        
-        final Metafile metafile;
-        if (new File(filename).exists()){
-        	metafile = new Metafile(new BufferedInputStream(new FileInputStream(new File(filename))));
-        }else if (filename.startsWith("http")){
-        	metafile = new Metafile(new BufferedInputStream(new URL(filename).openStream()));
-        }else{
-        	metafile = new Metafile(new BufferedInputStream(new URL("http://academictorrents.com/download/" + filename).openStream()));
-        }
-        
-        if (args.length > 1){
-        	
-        	if (args[1].equals("ls")){
-        		
-        		System.out.println("File Listing:");
-        		
-        		for (Object s : metafile.getFiles())
-                	System.out.println(s);
-        		
-        	}
-        	
-        	
-        	//System.exit(0);
-        }
-        
+        final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(file)));
+        System.out.println("Downloading: " + metafile.getName());
         
 //        for (Object s : metafile.getInfo().keySet())
 //        	System.out.println(s + " " + metafile.getInfo().get(s));
