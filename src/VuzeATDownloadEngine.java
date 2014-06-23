@@ -62,16 +62,15 @@ class DownloadStateListener implements DownloadManagerListener {
 					try {
 						boolean downloadCompleted = false;
 						while (!downloadCompleted) {
-							AzureusCore core = AzureusCoreFactory
-									.getSingleton();
-							List<DownloadManager> managers = core
-									.getGlobalManager().getDownloadManagers();
+							AzureusCore core = AzureusCoreFactory.getSingleton();
+							List<DownloadManager> managers = core.getGlobalManager().getDownloadManagers();
 
 							// There is only one in the queue.
 							DownloadManager man = managers.get(0);
-							System.out.println("Download is "
-									+ (man.getStats().getCompleted() / 10.0)
-									+ " % complete");
+							System.out.println("Downloading " +
+									man.getDownloadState().getDisplayName() + 
+									+ (man.getStats().getCompleted() / 10.0) + " %, " 
+									+ man.getNbSeeds() + " Mirrors");
 							downloadCompleted = man.isDownloadComplete(true);
 							// Check every 10 seconds on the progress
 							Thread.sleep(10000);
