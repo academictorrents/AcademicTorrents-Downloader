@@ -54,7 +54,7 @@ public class Torrent extends InterruptableTasksThread {
     private IncomingPeerListener incomingPeerListener;
     private PieceChooser pieceChooser = null;
     private Choker choker = new Choker(this);
-    public static final String agent = "AcademicTorrentsDownloader/0.1";
+    public static final String agent = "AcademicTorrentsDownloader/0.1; WeTorrentEngine";
     public static final boolean verbose = false;
     private BandwidthLimiter uploadBandwidthLimiter;
 
