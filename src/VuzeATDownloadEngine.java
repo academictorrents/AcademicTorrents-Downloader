@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.gudy.azureus2.core3.disk.DiskManagerFileInfo;
@@ -68,9 +69,10 @@ class DownloadStateListener implements DownloadManagerListener {
 							// There is only one in the queue.
 							DownloadManager man = managers.get(0);
 							System.out.println("Downloading " +
-									man.getDownloadState().getDisplayName() + 
+									Main.humanReadableByteCount(man.getDiskManager().getRemainingExcludingDND(),true) + "/" + 
+									Main.humanReadableByteCount(man.getSize(), true) + 
 									+ (man.getStats().getCompleted() / 10.0) + " %, " 
-									+ man.getNbSeeds() + " Mirrors");
+									+ man.getNbSeeds() + " Mirrors " + Arrays.toString(man.getCurrentPeers()));
 							downloadCompleted = man.isDownloadComplete(true);
 							// Check every 10 seconds on the progress
 							Thread.sleep(10000);

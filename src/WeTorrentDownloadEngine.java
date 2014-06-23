@@ -46,9 +46,9 @@ public class WeTorrentDownloadEngine {
 					int done = (int) ((completed*1.0/metafile.getLength()*1.0)*100);
 		            
 		            System.out.print("Resuming (have/scanned/total) " + 
-		            humanReadableByteCount(resumed,true) + "/" + 
-		            humanReadableByteCount(completed,true) + "/" + 
-		            humanReadableByteCount(metafile.getLength(),true) + ", " + 
+		            		Main.humanReadableByteCount(resumed,true) + "/" + 
+		            		Main.humanReadableByteCount(completed,true) + "/" + 
+		            		Main.humanReadableByteCount(metafile.getLength(),true) + ", " + 
 		            done + "%");
 					
 				}
@@ -87,9 +87,9 @@ public class WeTorrentDownloadEngine {
             previoussize = torrent.getTorrentDisk().getCompleted();
             
             String toprint = String.format("Downloading (have/total) %s/%s, " + done + "%%, %s bytes/sec, %s peers",
-            		humanReadableByteCount(torrent.getTorrentDisk().getCompleted(), true),
-            		humanReadableByteCount(metafile.getLength(), true),
-            		humanReadableByteCount((long) stats.getMean(), true),
+            		Main.humanReadableByteCount(torrent.getTorrentDisk().getCompleted(), true),
+            		Main.humanReadableByteCount(metafile.getLength(), true),
+            		Main.humanReadableByteCount((long) stats.getMean(), true),
             		torrent.getPeersManager().getActivePeersNumber()
             		);
             previousStringLength = toprint.length();
@@ -105,15 +105,6 @@ public class WeTorrentDownloadEngine {
 		
 		
 		
-	}
-	
-	
-	public static String humanReadableByteCount(long bytes, boolean si) {
-	    int unit = si ? 1000 : 1024;
-	    if (bytes < unit) return bytes + " B";
-	    int exp = (int) (Math.log(bytes) / Math.log(unit));
-	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-	    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 
 }
