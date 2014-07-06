@@ -29,7 +29,7 @@ public class EclipseDownloadEngine {
 		TorrentConfiguration.setConfigurationPath(new File(System
 				.getProperty("user.home"), ".hilberteffect"));
 		int offset = 0;
-		boolean debug = false;
+		boolean debug = true;
 		int port = -1;
 
 		try {
@@ -38,13 +38,16 @@ public class EclipseDownloadEngine {
 				TorrentServer.setPort(port);
 			}
 			TorrentFile file = new TorrentFile(torrentFile);
-			new PojoExplorer(file);
-			PojoExplorer.pausethread();
+			
+			if (file.isMultiFile())
+				file.setTargetFile(new File(file.getHexHash()));
+			else
+				file.setTargetFile(new File(file.getFilenames()[0].replaceAll("[^\\x00-\\x7f]", "")));
+			
 			System.out.println(file.getTargetFile());
-			//file.setTargetFile(new File(args[offset + 1]));
 
 			Torrent host = TorrentFactory.createTorrent(file);
-
+			
 			if (debug) {
 				TorrentConfiguration.DEBUG = true;
 				TorrentConfiguration.setDebugListener(new DebugListener());

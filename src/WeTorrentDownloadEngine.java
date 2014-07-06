@@ -4,7 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.bitlet.wetorrent.Metafile;
@@ -15,15 +20,23 @@ import org.bitlet.wetorrent.disk.TorrentDisk;
 import org.bitlet.wetorrent.peer.IncomingPeerListener;
 
 
-public class WeTorrentDownloadEngine {
+public class WeTorrentDownloadEngine  implements DownloadEngine{
 	
 	private static final int PORT = 6881;
+	
+	public WeTorrentDownloadEngine() {
 
-	public static void download(File file) throws Exception {
+		
+	}
+	
+	
+	@Override
+	public void download(File file, String specficFile) throws Exception {
 		System.out.println("Using WeTorrent Engine");
 
 
         final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(file)));
+        metafile.setName(Main.clean(metafile.getName()));
         System.out.println("Downloading: " + metafile.getName());
         
 //        for (Object s : metafile.getInfo().keySet())
@@ -32,24 +45,32 @@ public class WeTorrentDownloadEngine {
         
         // Create the torrent disk, this is the destination where the torrent file/s will be saved
         TorrentDisk tdisk = new PlainFileSystemTorrentDisk(metafile, new File("."));
+
         
         if (tdisk.init()){
 	        tdisk.resume(new ResumeListener() {
 				
+	        	int done = -1;
+	        	
 				@Override
 				public void percent(long completed, long resumed) {
+
+					int newDone = (int) ((completed*1.0/metafile.getLength()*1.0)*100);
 					
-					for (int i = 0; i< 80; i++){
-		            	System.out.print("\b");
-		            }
-					
-					int done = (int) ((completed*1.0/metafile.getLength()*1.0)*100);
-		            
-		            System.out.print("Resuming (have/scanned/total) " + 
-		            		Main.humanReadableByteCount(resumed,true) + "/" + 
-		            		Main.humanReadableByteCount(completed,true) + "/" + 
-		            		Main.humanReadableByteCount(metafile.getLength(),true) + ", " + 
-		            done + "%");
+					if (done != newDone){
+						done = newDone;
+						
+						for (int i = 0; i< 80; i++){
+			            	System.out.print("\b");
+			            }
+						System.out.print("\r");
+						
+			            System.out.print("Resuming (have/scanned/total) " + 
+			            		Main.humanReadableByteCount(resumed,true) + "/" + 
+			            		Main.humanReadableByteCount(completed,true) + "/" + 
+			            		Main.humanReadableByteCount(metafile.getLength(),true) + ", " + 
+			            done + "%");
+					}
 					
 				}
 			});
@@ -79,6 +100,7 @@ public class WeTorrentDownloadEngine {
             for (int i = 0; i< previousStringLength+1; i++){
             	System.out.print("\b");
             }
+            System.out.print("\r");
             
             
             int done = (int) ((torrent.getTorrentDisk().getCompleted()*1.0/metafile.getLength()*1.0)*100);
@@ -102,6 +124,43 @@ public class WeTorrentDownloadEngine {
         //torrent.interrupt();
         //peerListener.interrupt();
         
+		
+		
+		
+	}
+
+
+	@Override
+	public void ls(File filen) throws Exception {
+		
+        final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(filen)));
+        metafile.setName(Main.clean(metafile.getName()));
+        
+        //System.out.println(metafile.getAnnounceList());
+        
+        if (metafile.isSingleFile()){
+        	 System.out.println(metafile.getName());
+        }else{
+	        for (Object elem : metafile.getFiles()) {
+	            Map file = (Map) elem;
+	            List path = (List) file.get(ByteBuffer.wrap("path".getBytes()));
+	            String pathName = metafile.getName();
+	
+	            Iterator pathIterator = path.iterator();
+	            while (pathIterator.hasNext()) {
+	                byte[] pathElem = ((ByteBuffer) pathIterator.next()).array();
+	                pathName += "/" + new String(pathElem);
+	            }
+	            System.out.println(Main.clean(pathName));
+	        }
+        }
+        
+        
+        
+        
+//        new PojoExplorer(metafile);
+//        PojoExplorer.pausethread();
+
 		
 		
 		
