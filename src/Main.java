@@ -19,8 +19,15 @@ public class Main {
 		
 		System.out.println("Welcome to the Academic Torrents Download tool!");
 		
-		//String input = "7858fdf307d9fe94aeaaeaeadfc554988b80a3ce";
+		//String input = "82c64b111b07ff855b8966701a13a25512687521";
+
+		if (args.length < 1){
+			System.out.println("Usage: atdownload INFOHASH");
+			System.exit(0);
+		}
+		
 		String input = args[0];//"7858fdf307d9fe94aeaaeaeadfc554988b80a3ce";
+
 		
         // read torrent filename from command line arg
         File downloadedTorrentFile;
@@ -48,9 +55,9 @@ public class Main {
         	
         }
         
-        
-        VuzeATDownloadEngine.download(downloadedTorrentFile);
-		//WeTorrentDownloadEngine.download(downloadedTorrentFile);
+        //EclipseDownloadEngine.download(downloadedTorrentFile);
+        //VuzeATDownloadEngine.download(downloadedTorrentFile);
+		WeTorrentDownloadEngine.download(downloadedTorrentFile);
 		
 	}
 	
