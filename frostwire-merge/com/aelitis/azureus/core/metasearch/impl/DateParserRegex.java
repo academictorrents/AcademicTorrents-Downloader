@@ -50,17 +50,17 @@ public class DateParserRegex extends DateParser {
 	
 	private static final String[] MONTHS_LIST = new String[] {
 		" january janvier enero januar",
-		" february fevrier fŽvrier febrero februar",
-		" march mars marzo marz marz mŠrz" ,
+		" february fevrier fï¿½vrier febrero februar",
+		" march mars marzo marz marz mï¿½rz" ,
 		" april avril abril april ",
 		" may mai mayo mai",
 		" june juin junio juni",
 		" july juillet julio juli",
-		" august aout aožt agosto august",
+		" august aout aoï¿½t agosto august",
 		" september septembre septiembre september",
 		" october octobre octubre oktober",
 		" november novembre noviembre november",
-		" december decembre dŽcembre diciembre dezember"};
+		" december decembre dï¿½cembre diciembre dezember"};
 	
 	public DateParserRegex() {
 		this("GMT-7",true,null);
