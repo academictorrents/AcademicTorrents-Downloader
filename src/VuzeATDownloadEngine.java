@@ -166,7 +166,14 @@ class DownloadStateListener implements DownloadManagerListener {
 										pstring = pstring.substring(0, pstring.length()-1);
 									
 									// get end of dns
-									pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
+									if (pstring.contains(".com."))
+										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".com.")-1)+1);
+									else if (pstring.contains(".edu."))
+										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".edu.")-1)+1);
+									else if (pstring.contains(".org."))
+										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".org.")-1)+1);
+									else
+										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
 									
 									// only show some peers but show all edu
 									if (!(count > 3) || pstring.contains(".edu"))
@@ -268,7 +275,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			  return revName;
 		}catch (Exception e){
 			
-			 return ipAddr;
+			 return oipAddr;
 		}
 		 
 		 
