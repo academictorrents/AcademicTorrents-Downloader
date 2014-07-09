@@ -2,7 +2,7 @@
 <!--
 Joseph Paul Cohen 2013/2014
 -->
-<project basedir="." default="jar" name="blucat">
+<project basedir="." default="jar" name="atdownload">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
@@ -32,7 +32,7 @@ Joseph Paul Cohen 2013/2014
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src"/>
+      	    <src path="src"/>
             <src path="wetorrent"/>
             <src path="frostwire-merge"/>
             <src path="eclipse"/>
