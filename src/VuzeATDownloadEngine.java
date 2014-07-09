@@ -160,24 +160,27 @@ class DownloadStateListener implements DownloadManagerListener {
 										pstring = getRevName(pstring);
 										
 									}
-	
-									// get rid of last .
-									if (pstring.length() == pstring.lastIndexOf('.')+1)
-										pstring = pstring.substring(0, pstring.length()-1);
 									
-									// get end of dns
-									if (pstring.contains(".com."))
-										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".com.")-1)+1);
-									else if (pstring.contains(".edu."))
-										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".edu.")-1)+1);
-									else if (pstring.contains(".org."))
-										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".org.")-1)+1);
-									else
-										pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
-									
-									// only show some peers but show all edu
-									if (!(count > 3) || pstring.contains(".edu"))
-										peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
+									//check if dns resolved
+									if (hasAlpha(pstring)){
+										// get rid of last .
+										if (pstring.length() == pstring.lastIndexOf('.')+1)
+											pstring = pstring.substring(0, pstring.length()-1);
+										
+										// get end of dns
+										if (pstring.contains(".com."))
+											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".com.")-1)+1);
+										else if (pstring.contains(".edu."))
+											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".edu.")-1)+1);
+										else if (pstring.contains(".org."))
+											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".org.")-1)+1);
+										else
+											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
+										
+										// only show some peers but show all edu
+										if (!(count > 3) || pstring.contains(".edu"))
+											peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
+									}
 								}
 							}
 							
