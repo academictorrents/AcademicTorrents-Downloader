@@ -1,20 +1,13 @@
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import java.io.File;
+import java.io.IOException;
+
 import org.eclipse.bittorrent.Torrent;
 import org.eclipse.bittorrent.TorrentConfiguration;
 import org.eclipse.bittorrent.TorrentFactory;
 import org.eclipse.bittorrent.TorrentFile;
 import org.eclipse.bittorrent.TorrentServer;
 import org.eclipse.bittorrent.TorrentConfiguration.IDebugListener;
-import org.eclipse.bittorrent.example.cli.CLI.DebugListener;
-import org.eclipse.bittorrent.example.cli.CLI.OutputThread;
 
 
 public class EclipseDownloadEngine {

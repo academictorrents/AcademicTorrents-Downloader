@@ -1,4 +1,5 @@
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,11 +32,11 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 	
 	
 	@Override
-	public void download(File file, String specficFile) throws Exception {
+	public void download(byte[] torrentFile, String specficFile) throws Exception {
 		System.out.println("Using WeTorrent Engine");
 
 
-        final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(file)));
+		final Metafile metafile = new Metafile(new ByteArrayInputStream(torrentFile));
         metafile.setName(Main.clean(metafile.getName()));
         System.out.println("Downloading: " + metafile.getName());
         
@@ -131,9 +132,9 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 
 
 	@Override
-	public void ls(File filen) throws Exception {
+	public void ls(byte[] torrentFile) throws Exception {
 		
-        final Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(filen)));
+        final Metafile metafile = new Metafile(new ByteArrayInputStream(torrentFile));
         metafile.setName(Main.clean(metafile.getName()));
         
         //System.out.println(metafile.getAnnounceList());
