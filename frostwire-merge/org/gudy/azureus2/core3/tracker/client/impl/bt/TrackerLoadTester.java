@@ -1,5 +1,5 @@
 /*
- * Created on 1 févr. 2005
+ * Created on 1 fevr. 2005
  * Created by Olivier Chalouhi
  * 
  * Copyright (C) 2004, 2005, 2006 Aelitis SAS, All rights Reserved
