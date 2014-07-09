@@ -75,7 +75,7 @@ public class Main {
 		
 		//args = new String[]{"7858fdf307d9fe94aeaaeaeadfc554988b80a3ce"};
 		
-		args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d"};
+		//args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d"};
 		
 		// wiki
 		//args = new String[]{"30ac2ef27829b1b5a7d0644097f55f335ca5241b"};
