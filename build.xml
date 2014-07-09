@@ -34,7 +34,7 @@ Joseph Paul Cohen 2013/2014
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
             <src path="wetorrent"/>
-            <src path="frostwire-merged"/>
+            <src path="frostwire-merge"/>
             <src path="eclipse"/>
             <classpath refid="classpath"/>
         </javac>

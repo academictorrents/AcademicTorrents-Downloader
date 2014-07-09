@@ -44,8 +44,8 @@ public class Main {
 		stdout = System.out;
 		stderr = System.err;
 		
-		//System.setOut(new PrintStream(new File(ATDIR + "log.out")));
-		//System.setErr(new PrintStream(new File(ATDIR + "log.err")));
+		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
+		System.setErr(new PrintStream(new File(ATDIR + "log.err")));
 		
 	}
 	
