@@ -1,10 +1,12 @@
 import java.io.File;
 
+import smartnode.models.Entry;
+
 
 public interface DownloadEngine {
 	
-	void ls(byte[] torrentFile) throws Exception;
+	void ls(Entry entry) throws Exception;
 
-	void download(byte[] torrentFile, String string) throws Exception;
+	void download(Entry entry, String string) throws Exception;
 
 }

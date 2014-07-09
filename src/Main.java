@@ -44,8 +44,8 @@ public class Main {
 		stdout = System.out;
 		stderr = System.err;
 		
-		//System.setOut(new PrintStream(new File(ATDIR + "log.out")));
-		//System.setErr(new PrintStream(new File(ATDIR + "log.err")));
+		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
+		System.setErr(new PrintStream(new File(ATDIR + "log.err")));
 		
 	}
 	
@@ -74,11 +74,16 @@ public class Main {
 		
 		//args = new String[]{"7858fdf307d9fe94aeaaeaeadfc554988b80a3ce"};
 		
-		//args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d", "ls"};
+		//args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d"};
 		
-		args = new String[]{"gnu-radio-rf-captures", "ls"};
+		// wiki
+		args = new String[]{"30ac2ef27829b1b5a7d0644097f55f335ca5241b"};
+		
+		
+		
+		//args = new String[]{"gnu-radio-rf-captures", "ls"};
 		//args = new String[]{"massgis-datasets", "ls"};
-		args = new String[]{"journal-of-machine-learning-research","ls"};
+		//args = new String[]{"journal-of-machine-learning-research","ls"};
 		
 		if (args.length < 1){
 			Main.println("Usage: atdown INFOHASH");
@@ -182,7 +187,7 @@ public class Main {
         		
         		// just list files
         		for (Entry e : toget){
-        			new WeTorrentDownloadEngine().ls(e.getTorrentFile());
+        			new WeTorrentDownloadEngine().ls(e);
         		}
         	}else if ("info".equals(args[1])){
         		
@@ -193,14 +198,14 @@ public class Main {
         		// download specific files
         		// NOT WORKING YET
         		for (Entry e : toget){
-        			de.download(e.getTorrentFile(), args[1]);
+        			de.download(e, args[1]);
         		}
         	}
         }else{
         
         	// just resume or start download it
     		for (Entry e : toget){
-    			de.download(e.getTorrentFile(), null);
+    			de.download(e, null);
     		}
         }
 		

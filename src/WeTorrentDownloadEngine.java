@@ -20,6 +20,8 @@ import org.bitlet.wetorrent.disk.ResumeListener;
 import org.bitlet.wetorrent.disk.TorrentDisk;
 import org.bitlet.wetorrent.peer.IncomingPeerListener;
 
+import smartnode.models.Entry;
+
 
 public class WeTorrentDownloadEngine  implements DownloadEngine{
 	
@@ -32,11 +34,11 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 	
 	
 	@Override
-	public void download(byte[] torrentFile, String specficFile) throws Exception {
+	public void download(Entry entry, String specficFile) throws Exception {
 		System.out.println("Using WeTorrent Engine");
 
 
-		final Metafile metafile = new Metafile(new ByteArrayInputStream(torrentFile));
+		final Metafile metafile = new Metafile(new ByteArrayInputStream(entry.getTorrentFile()));
         metafile.setName(Main.clean(metafile.getName()));
         System.out.println("Downloading: " + metafile.getName());
         
@@ -132,9 +134,9 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 
 
 	@Override
-	public void ls(byte[] torrentFile) throws Exception {
+	public void ls(Entry entry) throws Exception {
 		
-        final Metafile metafile = new Metafile(new ByteArrayInputStream(torrentFile));
+        final Metafile metafile = new Metafile(new ByteArrayInputStream(entry.getTorrentFile()));
         metafile.setName(Main.clean(metafile.getName()));
         
         //System.out.println(metafile.getAnnounceList());
