@@ -3,7 +3,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -19,6 +21,8 @@ import org.gudy.azureus2.core3.download.DownloadManagerListener;
 import org.gudy.azureus2.core3.global.GlobalManager;
 import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
 import org.gudy.azureus2.core3.peer.PEPeer;
+import org.gudy.azureus2.plugins.PluginManager;
+import org.gudy.azureus2.plugins.PluginManagerDefaults;
 import org.gudy.azureus2.plugins.torrent.Torrent;
 import org.gudy.azureus2.plugins.torrent.TorrentFile;
 import org.gudy.azureus2.pluginsimpl.local.torrent.TorrentFileImpl;
@@ -46,6 +50,14 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    AzureusCore core = AzureusCoreFactory.create();
 	    
 	    
+	   // [Start/Stop Rules, Torrent Removal Rules, Share Hoster, Default Tracker Web, Core Update Checker, Core Patch Checker, Platform Checker, UPnP, DHT, DHT Tracker, Magnet URI Handler, External Seed, Local Tracker, Tracker Peer Auth, Network Status, Buddy, RSS]
+
+	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLATFORM_CHECKER, false);
+	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_PATCH_CHECKER, false);
+	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_UPDATE_CHECKER, false);
+	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLUGIN_UPDATE_CHECKER, false);
+	    
+	    
 //	    new PojoExplorer(core);
 //	    PojoExplorer.pausethread();
 	    core.start();
@@ -70,7 +82,7 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    
 	    DownloadManager manager = globalManager.addDownloadManager(downloadedTorrentFile.getAbsolutePath(),
 	                                                               downloadDirectory.getAbsolutePath());
-	    Main.println("Downloading");
+	    //Main.println("Downloading");
 	    DownloadManagerListener listener = new DownloadStateListener();
 	    manager.addListener(listener);    
 //	    Main.println(manager.getErrorDetails());
@@ -113,7 +125,30 @@ class DownloadStateListener implements DownloadManagerListener {
 							
 							List<String> peers = new ArrayList<String>();
 							int count = 0;
-							for (PEPeer peer : man.getCurrentPeers()){
+							
+							PriorityQueue<PEPeer> peerss = new PriorityQueue<PEPeer>(
+									Math.max(1,man.getCurrentPeers().length),
+									new Comparator<PEPeer>() {
+
+										@Override
+										public int compare(PEPeer o1, PEPeer o2) {
+											
+											long o1r = o1.getStats().getDataReceiveRate();
+											long o2r = o2.getStats().getDataReceiveRate();
+											
+											if (o2r > o1r)
+												return 1;
+											else if (o2r == o1r)
+												return 0;
+											else 
+												return -1;
+										}
+										
+									});
+							
+							peerss.addAll(Arrays.asList(man.getCurrentPeers()));
+							
+							for (PEPeer peer : peerss){
 								
 								long dlrate = peer.getStats().getDataReceiveRate();
 								
@@ -134,15 +169,16 @@ class DownloadStateListener implements DownloadManagerListener {
 									pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
 									
 									// only show some peers but show all edu
-									if (!(count > 5) || pstring.contains(".edu"))
+									if (!(count > 3) || pstring.contains(".edu"))
 										peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
 								}
 							}
 							
-							
-							Main.println("Downloading " +
-									Main.humanReadableByteCount(man.getSize() - man.getDiskManager().getRemainingExcludingDND(),true) + "/" + 
-									Main.humanReadableByteCount(man.getSize(), true) + " " + 
+							for (int i = 0; i < 300; i++)
+								Main.print("\b");
+							Main.print("\r");
+							Main.print(Main.humanReadableByteCount(man.getStats().getDataReceiveRate(), true) + "/s " + 
+									Main.humanReadableByteCountRatio(man.getSize() - man.getDiskManager().getRemainingExcludingDND(), man.getSize(),true) + "/" + 
 									+ (man.getStats().getCompleted() / 10.0) + "%, " 
 									+ man.getNbSeeds() + " Mirrors " + peers.toString());
 							downloadCompleted = man.isDownloadComplete(true);
@@ -161,7 +197,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
-			Main.println("Checking");
+			Main.println("Checking Existing Data..");
 		default :
 			//Main.println("state:" + state);
 			

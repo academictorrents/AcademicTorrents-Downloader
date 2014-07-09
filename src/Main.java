@@ -44,13 +44,14 @@ public class Main {
 		stdout = System.out;
 		stderr = System.err;
 		
-		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
-		System.setErr(new PrintStream(new File(ATDIR + "log.err")));
+		//System.setOut(new PrintStream(new File(ATDIR + "log.out")));
+		//System.setErr(new PrintStream(new File(ATDIR + "log.err")));
 		
 	}
 	
 	public static void main(String[] args) throws Exception {
 	
+		new File(ATDIR).mkdirs();
 		hardLogging();
 		
 		
@@ -74,7 +75,7 @@ public class Main {
 		
 		//args = new String[]{"7858fdf307d9fe94aeaaeaeadfc554988b80a3ce"};
 		
-		//args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d"};
+		args = new String[]{"059ed25558b4587143db637ac3ca94bebb57d88d"};
 		
 		// wiki
 		//args = new String[]{"30ac2ef27829b1b5a7d0644097f55f335ca5241b"};
@@ -221,6 +222,16 @@ public class Main {
 	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
 	    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
+	
+	public static String humanReadableByteCountRatio(long bytes, long totbytes, boolean si) {
+	    int unit = si ? 1000 : 1024;
+	    if (totbytes < unit) return bytes + "/" + totbytes + " B";
+	    int exp = (int) (Math.log(totbytes) / Math.log(unit));
+	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+	    return String.format("%.1f/%.1f %sB", bytes / Math.pow(unit, exp),  totbytes / Math.pow(unit, exp), pre);
+	}
+	
+	
 	
 	public static String clean(String s){
 		return s.replaceAll("[^\\x00-\\x7f]", "");
