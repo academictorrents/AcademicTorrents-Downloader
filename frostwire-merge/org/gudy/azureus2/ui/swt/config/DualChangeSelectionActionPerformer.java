@@ -1,6 +1,6 @@
 /*
  * File    : DualChangeSelectionActionPerformer.java
- * Created : 16 déc. 2003}
+ * Created : 16 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client

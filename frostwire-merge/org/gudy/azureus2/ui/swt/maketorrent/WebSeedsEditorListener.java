@@ -1,6 +1,6 @@
 /*
  * File    : TrackerEditorListener.java
- * Created : 3 déc. 2003}
+ * Created : 3 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client

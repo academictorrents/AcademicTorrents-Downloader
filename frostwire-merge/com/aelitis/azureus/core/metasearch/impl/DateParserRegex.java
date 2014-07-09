@@ -60,7 +60,7 @@ public class DateParserRegex extends DateParser {
 		" september septembre septiembre september",
 		" october octobre octubre oktober",
 		" november novembre noviembre november",
-		" december decembre d�cembre diciembre dezember"};
+		" december decembre decembre diciembre dezember"};
 	
 	public DateParserRegex() {
 		this("GMT-7",true,null);

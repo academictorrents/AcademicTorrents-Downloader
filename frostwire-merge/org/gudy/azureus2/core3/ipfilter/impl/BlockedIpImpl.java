@@ -1,6 +1,6 @@
 /*
  * File    : BlockedIpImpl.java
- * Created : 12 déc. 2003}
+ * Created : 12 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client

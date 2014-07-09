@@ -1,6 +1,6 @@
 /*
  * File    : OverallStats.java
- * Created : 15 déc. 2003}
+ * Created : 15 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client

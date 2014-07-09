@@ -1,6 +1,6 @@
 /*
  * File    : EndGameModeChunk.java
- * Created : 4 déc. 2003}
+ * Created : 4 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client

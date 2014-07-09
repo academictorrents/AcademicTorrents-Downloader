@@ -1,6 +1,6 @@
 /*
  * File    : SuperSeedPiece.java
- * Created : 13 déc. 2003}
+ * Created : 13 dec. 2003}
  * By      : Olivier
  *
  * Azureus - a Java Bittorrent client
