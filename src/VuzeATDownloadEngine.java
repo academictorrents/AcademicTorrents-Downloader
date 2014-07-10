@@ -37,18 +37,50 @@ import com.aelitis.azureus.core.AzureusCoreFactory;
 public class VuzeATDownloadEngine implements DownloadEngine{
 
 	
-	public VuzeATDownloadEngine() {
+	public VuzeATDownloadEngine() throws Exception {
 		// TODO Auto-generated constructor stub
+		
+	    AzureusCore core = AzureusCoreFactory.create();
+		
+	    
+	    
+	    if (!core.isStarted())
+	    	core.start();
+	    
+	  //remove previous stuff
+	    try {
+	    	
+		    GlobalManager globalManager = core.getGlobalManager();
+		    for (DownloadManager d : globalManager.getDownloadManagers()){
+		    	System.out.println("Removed: " + d.getDisplayName());
+		    	
+					globalManager.removeDownloadManager(d);
+		    }
+		} catch (GlobalManagerDownloadRemovalVetoException e) {
+			e.printStackTrace();
+			throw new Exception("Error setting up engine");
+		}
+	    
+	    
+	    
+//	    new PojoExplorer(core);
+//	    PojoExplorer.pausethread();
+
+	    
+	    
+	    
+	    
+		
 	}
 	
 	public void download(Entry entry, String specificFile) throws InterruptedException, GlobalManagerDownloadRemovalVetoException, IOException {
 		
-    
+		Main.println("Downloading: " + entry.getName());
 //	    new File(Main.ATDIR + "/az-config").delete();
 //	    System.setProperty("azureus.config.path", Main.ATDIR + "/az-config");
-//	    
-	    AzureusCore core = AzureusCoreFactory.create();
-	    
+
+
+		AzureusCore core = AzureusCoreFactory.getSingleton();
 	    
 	   // [Start/Stop Rules, Torrent Removal Rules, Share Hoster, Default Tracker Web, Core Update Checker, Core Patch Checker, Platform Checker, UPnP, DHT, DHT Tracker, Magnet URI Handler, External Seed, Local Tracker, Tracker Peer Auth, Network Status, Buddy, RSS]
 
@@ -58,13 +90,7 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLUGIN_UPDATE_CHECKER, false);
 	    
 	    
-//	    new PojoExplorer(core);
-//	    PojoExplorer.pausethread();
-	    core.start();
-	    
-	    
-	    //Main.println("Completed download of : " + downloadedTorrentFile.getName());
-	    //Main.println("File stored as : " + downloadedTorrentFile.getAbsolutePath());
+
 	    
 	    File downloadDirectory = new File("."); //Destination directory
 	    //if(downloadDirectory.exists() == false) downloadDirectory.mkdir();
@@ -73,10 +99,6 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    
 	    //Start the download of the torrent 
 	    GlobalManager globalManager = core.getGlobalManager();
-	    for (DownloadManager d : globalManager.getDownloadManagers()){
-	    	System.out.println("Removed: " + d.getDisplayName());
-	    	globalManager.removeDownloadManager(d);
-	    }
 	    
 	    FileUtils.copyInputStreamToFile(new ByteArrayInputStream(entry.getTorrentFile()), downloadedTorrentFile);
 	    
@@ -89,6 +111,7 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 //	    new PojoExplorer(manager);
 //	    PojoExplorer.pausethread();
 	    globalManager.startAllDownloads();
+	    
 	    
 	    //core.requestStop();
 
@@ -215,7 +238,7 @@ class DownloadStateListener implements DownloadManagerListener {
 	}
 
 	public void downloadComplete(DownloadManager manager) {
-		Main.println("Download Completed - Exiting.....");
+		Main.println("Download Completed");
 		AzureusCore core = AzureusCoreFactory.getSingleton();
 		try {
 			core.requestStop();
@@ -228,21 +251,21 @@ class DownloadStateListener implements DownloadManagerListener {
 
 	@Override
 	public void completionChanged(DownloadManager manager, boolean bCompleted) {
-		Main.println("completionChanged");
+		//Main.println("completionChanged");
 		
 	}
 
 	@Override
 	public void positionChanged(DownloadManager download, int oldPosition,
 			int newPosition) {
-		Main.println("positionChanged");
+		//Main.println("positionChanged");
 		
 	}
 
 	@Override
 	public void filePriorityChanged(DownloadManager download,
 			DiskManagerFileInfo file) {
-		Main.println("filePriorityChanged");
+		//Main.println("filePriorityChanged");
 		
 	}
 	
