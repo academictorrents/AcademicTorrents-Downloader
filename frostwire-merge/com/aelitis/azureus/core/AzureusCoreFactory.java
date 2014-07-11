@@ -38,11 +38,7 @@ AzureusCoreFactory
 		 * @throws AzureusCoreException
 		 */
 	
-	public static AzureusCore
-	create()
-	
-		throws AzureusCoreException
-	{
+	public static AzureusCore create() throws AzureusCoreException {
 		return( AzureusCoreImpl.create());
 	}
 	
@@ -52,9 +48,8 @@ AzureusCoreFactory
 	 * 
 	 * @return
 	 */
-	public static boolean
-	isCoreAvailable()
-	{
+	public static boolean isCoreAvailable(){
+		
 		return( AzureusCoreImpl.isCoreAvailable());
 	}
 	

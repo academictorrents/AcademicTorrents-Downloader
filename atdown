@@ -6,5 +6,5 @@ ATDLIBS=$DIR/build/atdownload.jar
 LIBS=`find $DIR/lib | tr '\n' ':'`
 
 
-java -cp $ATDLIBS:$LIBS Main $@
+java -cp $ATDLIBS:$LIBS atdown.Main $@
 

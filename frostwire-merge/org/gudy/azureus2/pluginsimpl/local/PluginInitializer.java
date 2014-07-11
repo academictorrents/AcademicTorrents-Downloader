@@ -49,7 +49,6 @@ import org.gudy.azureus2.pluginsimpl.local.utils.UtilitiesImpl.runnableWithExcep
 import org.gudy.azureus2.update.UpdaterUpdateChecker;
 import org.gudy.azureus2.update.UpdaterUtils;
 
-
 import com.aelitis.azureus.core.*;
 import com.aelitis.azureus.core.versioncheck.VersionCheckClient;
 
@@ -801,7 +800,7 @@ PluginInitializer
 	      
 	    try{
 	    
-	    	List	loaded_pis = loadPluginFromDir(pluginsDirectory[i], bSkipAlreadyLoaded, loading_for_startup, initialise);
+	    	List<PluginInterfaceImpl>	loaded_pis = loadPluginFromDir(pluginsDirectory[i], bSkipAlreadyLoaded, loading_for_startup, initialise);
 	      	
 	    		// save details for later initialisation
 	    	
@@ -1373,20 +1372,19 @@ PluginInitializer
 	}
   }
   
-  public void 
-  initialisePlugins() 
-  {
+  public void initialisePlugins() {
+	  
 	  try{
 		  addInitThread();
 		  
-		  final LinkedList initQueue = new LinkedList();
+		  final LinkedList<Runnable> initQueue = new LinkedList<Runnable>();
 		  
 			for (int i = 0; i < loaded_pi_list.size(); i++) {
 				final int idx = i;
 				initQueue.add(new Runnable() {
 					public void run() {
 						try {
-							List l = (List) loaded_pi_list.get(idx);
+							List<PluginInterfaceImpl> l = (List<PluginInterfaceImpl>) loaded_pi_list.get(idx);
 							
 							if (l.size() > 0) {
 								PluginInterfaceImpl plugin_interface = (PluginInterfaceImpl) l.get(0);
@@ -1617,12 +1615,8 @@ PluginInitializer
   		return( plugins_initialised );
   	}
   	
-  	private void
-	initialisePlugin(
-		List	l )
-  	
-  		throws PluginException
-  	{
+  	private void initialisePlugin(List<PluginInterfaceImpl> l) throws PluginException {
+  		
   		PluginException	last_load_failure = null;
   		
   		for (int i=0;i<l.size();i++){
@@ -1652,12 +1646,8 @@ PluginInitializer
       	
   				UtilitiesImpl.callWithPluginThreadContext(
   					plugin_interface,
-  					new runnableWithException<PluginException>()
-  					{
-  						public void 
-  						run() 
-  							throws PluginException 
-  						{
+  					new runnableWithException<PluginException>() {
+  						public void run() throws PluginException {
   							fireCreated( plugin_interface );
 				
   							plugin.initialize(plugin_interface);

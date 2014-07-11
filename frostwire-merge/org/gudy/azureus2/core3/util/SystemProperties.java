@@ -45,7 +45,7 @@ public class SystemProperties {
   
   public static final String	AZ_APP_ID	= "az";
   
-  public static String APPLICATION_NAME 		= "Azureus";
+  public static String APPLICATION_NAME 		= "ATDownloader";
   private static String APPLICATION_ID 			= AZ_APP_ID;
   private static String APPLICATION_VERSION		= Constants.AZUREUS_VERSION;
   
@@ -56,7 +56,7 @@ public class SystemProperties {
   private static final 	String OSX_DEFAULT = "Library" + SEP + "Application Support";
   
   
-  private static final boolean PORTABLE = System.getProperty( "azureus.portable.root", "" ).length() > 0;
+  private static final boolean PORTABLE = true; //System.getProperty( "azureus.portable.root", "" ).length() > 0;
 	
   	private static String user_path;
   	private static String app_path;
@@ -359,7 +359,7 @@ public class SystemProperties {
 	  
 	  if (Constants.isOSX) {
 	  	// Java7 appaends .app to user.dir
-	  	String appName = SystemProperties.getApplicationName() + ".app/";
+	  	String appName = SystemProperties.getApplicationName();// + ".app/";
 	  	if (temp_app_path.endsWith(appName)) {
 	  		temp_app_path = temp_app_path.substring(0, temp_app_path.length() - appName.length());
 	  	}

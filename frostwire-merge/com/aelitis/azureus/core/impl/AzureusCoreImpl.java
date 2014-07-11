@@ -132,11 +132,7 @@ AzureusCoreImpl
 	
 	static AEMonitor mon_coreRunningListeners = new AEMonitor("CoreCreationListeners");
 	
-	public static AzureusCore
-	create()
-	
-		throws AzureusCoreException
-	{
+	public static AzureusCore create() throws AzureusCoreException {
 		try{
 			class_mon.enter();
 			
@@ -219,8 +215,8 @@ AzureusCoreImpl
 	{
 		create_time = SystemTime.getCurrentTime();
 		
-		if(!SUPPRESS_CLASSLOADER_ERRORS && !(this.getClass().getClassLoader() instanceof PrimaryClassloader))
-			System.out.println("###\nWarning: Core not instantiated through a PrimaryClassloader, this can lead to restricted functionality or bugs in future versions\n###");
+		//if(!SUPPRESS_CLASSLOADER_ERRORS && !(this.getClass().getClassLoader() instanceof PrimaryClassloader))
+		//	System.out.println("###\nWarning: Core not instantiated through a PrimaryClassloader, this can lead to restricted functionality or bugs in future versions\n###");
 		
 		COConfigurationManager.initialise();
 		

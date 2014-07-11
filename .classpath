@@ -12,10 +12,7 @@
 	<classpathentry kind="lib" path="lib/opencsv-2.3.jar"/>
 	<classpathentry kind="lib" path="lib/javacsv.jar" sourcepath="lib/javacsvsrc.zip"/>
 	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/gettext-commons.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/h2-1.3.164.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/jaudiotagger.jar"/>
 	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/messages.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/metadata-extractor-2.6.2.jar"/>
 	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/slf4j-jdk14-1.7.5.jar"/>
 	<classpathentry kind="lib" path="frostwire-desktop/common/vuze/azureus2/lib/apple-extensions.jar"/>

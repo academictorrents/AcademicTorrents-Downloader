@@ -1,3 +1,4 @@
+package atdown;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -14,6 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bitlet.wetorrent.Metafile;
+import org.gudy.azureus2.core3.logging.Logger;
 
 import smartnode.models.Entry;
 import smartnode.utils.ATFetcher;
@@ -44,6 +46,7 @@ public class Main {
 		stdout = System.out;
 		stderr = System.err;
 		
+		Logger.allowLoggingToStdErr(true);
 		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
 		System.setErr(new PrintStream(new File(ATDIR + "log.err")));
 		

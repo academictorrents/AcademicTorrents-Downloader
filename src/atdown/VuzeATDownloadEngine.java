@@ -1,3 +1,4 @@
+package atdown;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +24,6 @@ import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
 import org.gudy.azureus2.core3.peer.PEPeer;
 import org.gudy.azureus2.plugins.PluginManager;
 import org.gudy.azureus2.plugins.PluginManagerDefaults;
-import org.gudy.azureus2.plugins.torrent.Torrent;
-import org.gudy.azureus2.plugins.torrent.TorrentFile;
-import org.gudy.azureus2.pluginsimpl.local.torrent.TorrentFileImpl;
 
 import smartnode.models.Entry;
 
@@ -36,14 +34,17 @@ import com.aelitis.azureus.core.AzureusCoreFactory;
 
 public class VuzeATDownloadEngine implements DownloadEngine{
 
+	AzureusCore core;
 	
 	public VuzeATDownloadEngine() throws Exception {
 		// TODO Auto-generated constructor stub
 		
-	    AzureusCore core = AzureusCoreFactory.create();
 		
-	    
-	    
+		System.setProperty("azureus.install.path",Main.ATDIR);
+		System.setProperty( "azureus.app.name","ATDownloader");
+		
+	    core = AzureusCoreFactory.create();
+		
 	    if (!core.isStarted())
 	    	core.start();
 	    
@@ -79,8 +80,6 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 //	    new File(Main.ATDIR + "/az-config").delete();
 //	    System.setProperty("azureus.config.path", Main.ATDIR + "/az-config");
 
-
-		AzureusCore core = AzureusCoreFactory.getSingleton();
 	    
 	   // [Start/Stop Rules, Torrent Removal Rules, Share Hoster, Default Tracker Web, Core Update Checker, Core Patch Checker, Platform Checker, UPnP, DHT, DHT Tracker, Magnet URI Handler, External Seed, Local Tracker, Tracker Peer Auth, Network Status, Buddy, RSS]
 
@@ -143,6 +142,12 @@ class DownloadStateListener implements DownloadManagerListener {
 							AzureusCore core = AzureusCoreFactory.getSingleton();
 							List<DownloadManager> managers = core.getGlobalManager().getDownloadManagers();
 
+							if (managers.size() < 1){
+								Main.println("Download Halted!");
+								downloadCompleted = true;
+								break;								
+							}
+							
 							// There is only one in the queue.
 							DownloadManager man = managers.get(0);
 							
@@ -179,31 +184,11 @@ class DownloadStateListener implements DownloadManagerListener {
 									count++;
 									String pstring = peer.getIPHostName();
 									
-									if (!hasAlpha(pstring)){
-										pstring = getRevName(pstring);
-										
-									}
+									pstring = tryForDNSName(pstring);
 									
-									//check if dns resolved
-									if (hasAlpha(pstring)){
-										// get rid of last .
-										if (pstring.length() == pstring.lastIndexOf('.')+1)
-											pstring = pstring.substring(0, pstring.length()-1);
-										
-										// get end of dns
-										if (pstring.contains(".com."))
-											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".com.")-1)+1);
-										else if (pstring.contains(".edu."))
-											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".edu.")-1)+1);
-										else if (pstring.contains(".org."))
-											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".org.")-1)+1);
-										else
-											pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
-										
-										// only show some peers but show all edu
-										if (!(count > 3) || pstring.contains(".edu"))
-											peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
-									}
+									// only show some peers but show all edu
+									if (!(count > 3) || pstring.contains(".edu"))
+										peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
 								}
 							}
 							
@@ -215,7 +200,7 @@ class DownloadStateListener implements DownloadManagerListener {
 									+ (man.getStats().getCompleted() / 10.0) + "%, " 
 									+ man.getNbSeeds() + " Mirrors " + peers.toString());
 							downloadCompleted = man.isDownloadComplete(true);
-							// Check every 10 seconds on the progress
+							// Check every 1 seconds on the progress
 							Thread.sleep(1000);
 						}
 					} catch (Exception e) {
@@ -231,6 +216,15 @@ class DownloadStateListener implements DownloadManagerListener {
 			break;
 		case DownloadManager.STATE_CHECKING:
 			Main.println("Checking Existing Data..");
+		case DownloadManager.STATE_ERROR:
+			System.out.println("Error : ( Check Log " + manager.getErrorDetails());
+			
+		case DownloadManager.STATE_STOPPED:
+			Main.println("Stopped..");
+		case DownloadManager.STATE_ALLOCATING:
+			Main.println("Allocating Drive Space..");
+		case DownloadManager.STATE_INITIALIZING:
+			Main.println("Initializing..");
 		default :
 			//Main.println("state:" + state);
 			
@@ -251,24 +245,53 @@ class DownloadStateListener implements DownloadManagerListener {
 
 	@Override
 	public void completionChanged(DownloadManager manager, boolean bCompleted) {
-		//Main.println("completionChanged");
+		System.out.println("completionChanged");
 		
 	}
 
 	@Override
 	public void positionChanged(DownloadManager download, int oldPosition,
 			int newPosition) {
-		//Main.println("positionChanged");
+		System.out.println("positionChanged");
 		
 	}
 
 	@Override
 	public void filePriorityChanged(DownloadManager download,
 			DiskManagerFileInfo file) {
-		//Main.println("filePriorityChanged");
+		System.out.println("filePriorityChanged");
 		
 	}
 	
+	
+	
+	
+	public static String tryForDNSName(String pstring) throws NamingException{
+		
+		if (!hasAlpha(pstring)){
+			pstring = getRevName(pstring);
+			
+		}
+		
+		//check if dns resolved
+		if (hasAlpha(pstring)){
+			// get rid of last .
+			if (pstring.length() == pstring.lastIndexOf('.')+1)
+				pstring = pstring.substring(0, pstring.length()-1);
+			
+			// get end of dns
+			if (pstring.contains(".com."))
+				pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".com.")-1)+1);
+			else if (pstring.contains(".edu."))
+				pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".edu.")-1)+1);
+			else if (pstring.contains(".org."))
+				pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf(".org.")-1)+1);
+			else
+				pstring = pstring.substring(pstring.lastIndexOf('.',pstring.lastIndexOf('.')-1)+1);
+		}
+		
+		return pstring;
+	}
 	
 	
 	

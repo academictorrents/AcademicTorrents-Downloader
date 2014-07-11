@@ -83,45 +83,45 @@ public class UpdaterUtils
 	checkBootstrapPlugins() 
 	{
 		try{
-			File	target_props = getPropsIfNotPresent( AZUPDATER_PLUGIN_ID, true );
-			
-			if ( target_props != null ){
-				
-				writePluginProperties(
-					target_props,
-					new String[]{
-						"plugin.class=org.gudy.azureus2.update.UpdaterUpdateChecker;org.gudy.azureus2.update.UpdaterPatcher",
-						"plugin.name=Azureus Update Support;Azureus Updater Support Patcher" });
-
-			}
+//			File	target_props = getPropsIfNotPresent( AZUPDATER_PLUGIN_ID, true );
+//			
+//			if ( target_props != null ){
+//				
+//				writePluginProperties(
+//					target_props,
+//					new String[]{
+//						"plugin.class=org.gudy.azureus2.update.UpdaterUpdateChecker;org.gudy.azureus2.update.UpdaterPatcher",
+//						"plugin.name=Azureus Update Support;Azureus Updater Support Patcher" });
+//
+//			}
 
 				// has to go into USER dir as currently VISTA plugin install into shared is BROKEN!
 			
-			target_props = getPropsIfNotPresent( AZUPNPAV_PLUGIN_ID, false );
-			
-			if ( target_props != null ){
-				
-				writePluginProperties(
-					target_props,
-					new String[]{
-						"plugin.class=com.aelitis.azureus.plugins.upnpmediaserver.UPnPMediaServer",
-						"plugin.name=UPnP Media Server",
-						"plugin.id=azupnpav" });
-			}
+//			target_props = getPropsIfNotPresent( AZUPNPAV_PLUGIN_ID, false );
+//			
+//			if ( target_props != null ){
+//				
+//				writePluginProperties(
+//					target_props,
+//					new String[]{
+//						"plugin.class=com.aelitis.azureus.plugins.upnpmediaserver.UPnPMediaServer",
+//						"plugin.name=UPnP Media Server",
+//						"plugin.id=azupnpav" });
+//			}
 			
 				// user-dir is better anyway
 			
-			target_props = getPropsIfNotPresent( AEFEATMAN_PLUGIN_ID, false );
-			
-			if ( target_props != null ){
-				
-				writePluginProperties(
-					target_props,
-					new String[]{
-						"plugin.class=com.aelitis.azureus.plugins.featman.FeatManPlugin",
-						"plugin.name=Vuze Feature Manager",
-						"plugin.id=aefeatman_v" });
-			}
+//			target_props = getPropsIfNotPresent( AEFEATMAN_PLUGIN_ID, false );
+//			
+//			if ( target_props != null ){
+//				
+//				writePluginProperties(
+//					target_props,
+//					new String[]{
+//						"plugin.class=com.aelitis.azureus.plugins.featman.FeatManPlugin",
+//						"plugin.name=Vuze Feature Manager",
+//						"plugin.id=aefeatman_v" });
+//			}
 			
 		}catch( Throwable e){
 			

@@ -992,13 +992,10 @@ UtilitiesImpl
 		}
 	}
 	
-	public static final <T extends Exception> void
-	callWithPluginThreadContext(
+	public static final <T extends Exception> void callWithPluginThreadContext(
 		PluginInterface					pi,
-		runnableWithException<T>		target )
-	
-		throws T
-	{
+		runnableWithException<T>		target ) throws T {
+		
 		PluginInterface existing = tls.get();
 		
 		try{
@@ -1262,18 +1259,10 @@ UtilitiesImpl
 		}
 	}
 	
-	public FeatureManager 
-	getFeatureManager()
-	{
-		return( this );
-	}
+	public FeatureManager getFeatureManager() { return( this ); }
 	
-	public Licence[]
-	createLicences(
-		String[]				feature_ids )
-	
-		throws PluginException
-	{
+	public Licence[] createLicences(String[] feature_ids) throws PluginException {
+		
 		List<FeatureEnabler>	enablers = getVerifiedEnablers();
 		
 		Throwable last_error = null;
@@ -1297,7 +1286,8 @@ UtilitiesImpl
 		
 		if ( last_error == null ){
 			
-			throw( getLicenceException( "Failed to create licence" ));
+			throw new PluginException("Removed by Joe");
+			//throw( getLicenceException( "Failed to create licence" ));
 			
 		}else{
 			
@@ -1305,119 +1295,115 @@ UtilitiesImpl
 		}
 	}
 	
-	public Licence 
-	addLicence(
-		String licence_key ) 
-	
-		throws PluginException
-	{
-		List<FeatureEnabler>	enablers = getVerifiedEnablers();
+	public Licence addLicence(String licence_key ) throws PluginException {
 		
-		Throwable last_error = null;
+		throw new PluginException("Removed by Joe");
 		
-		for ( FeatureEnabler enabler: enablers ){
-			
-			try{
-				Licence licence = enabler.addLicence( licence_key );
-				
-				if ( licence != null ){
-					
-					return( licence );
-				}
-			}catch( Throwable e ){
-		
-				last_error = e;
-				
-				Debug.out( e );
-			}
-		}
-		
-		if ( last_error == null ){
-		
-			throw( getLicenceException( "Licence addition failed" ));
-			
-		}else{
-			
-			throw( new PluginException( "Licence handler failed to add licence", last_error ));
-		}
+//		List<FeatureEnabler>	enablers = getVerifiedEnablers();
+//		
+//		Throwable last_error = null;
+//		
+//		for ( FeatureEnabler enabler: enablers ){
+//			
+//			try{
+//				Licence licence = enabler.addLicence( licence_key );
+//				
+//				if ( licence != null ){
+//					
+//					return( licence );
+//				}
+//			}catch( Throwable e ){
+//		
+//				last_error = e;
+//				
+//				Debug.out( e );
+//			}
+//		}
+//		
+//		if ( last_error == null ){
+//		
+//			throw( getLicenceException( "Licence addition failed" ));
+//			
+//		}else{
+//			
+//			throw( new PluginException( "Licence handler failed to add licence", last_error ));
+//		}
 	}
 	
-	private PluginException
-	getLicenceException(
-		String		str )
-	{		
-		try{
-			String extra = "";
-
-			PluginInterface fm_pi = core.getPluginManager().getPluginInterfaceByID( "aefeatman_v", false );
-		
-			
-			if ( fm_pi == null || ( fm_pi.getPluginVersion() != null && fm_pi.getPluginVersion().equals( "0.0" ))){
-				
-				Download[] downloads = pi.getDownloadManager().getDownloads();
-				
-				Download hit = null;
-				
-				for ( Download download: downloads ){
-					
-					Torrent torrent = download.getTorrent();
-					
-					if ( torrent != null && torrent.isSimpleTorrent()){
-						
-						String name = torrent.getFiles()[0].getName();
-						
-						if ( name.startsWith( "aefeatman_v_") && name.endsWith( ".zip" )){
-							
-							hit = download;
-							
-							break;
-						}
-					}
-				}
-				
-				if ( hit == null ){
-				
-					extra = "The 'Vuze Feature Manager' plugin is required but isn't installed";
-					
-				}else{
-					
-					int	state = hit.getState();
-					
-					if (	(state == Download.ST_STOPPED && !hit.isComplete() ) || 
-							state == Download.ST_ERROR ){
-						
-						extra = "The 'Vuze Feature Manager' plugin has failed to download - check your Library's detailed view for errors or stopped downloads";
-						
-					}else{
-						
-						extra = "The 'Vuze Feature Manager' plugin is currently downloading, please wait for it to complete and install";
-					}
-				}
-			}else{
-				
-				PluginState ps = fm_pi.getPluginState();
-				
-				if ( !ps.isLoadedAtStartup()){
-					
-					extra = "You need to set the 'Vuze Feature Manager' plugin to 'load at startup' in the plugin options";
-					
-				}else if ( ps.isDisabled()){
-					
-					extra = "The 'Vuze Feature Manager' plugin needs to be enabled";
-
-				}else if ( !ps.isOperational()){
-					
-					extra = "The 'Vuze Feature Manager' plugin isn't operational";
-				}
-			}
-			
-			return( new PluginException( str + ": " + extra ));
-			
-		}catch( Throwable e ){
-			
-			return( new PluginException( str, e ));
-		}
-	}
+//	private PluginException
+//	getLicenceException(String str){		
+//		try{
+//			String extra = "";
+//
+//			PluginInterface fm_pi = core.getPluginManager().getPluginInterfaceByID( "aefeatman_v", false );
+//		
+//			
+//			if ( fm_pi == null || ( fm_pi.getPluginVersion() != null && fm_pi.getPluginVersion().equals( "0.0" ))){
+//				
+//				Download[] downloads = pi.getDownloadManager().getDownloads();
+//				
+//				Download hit = null;
+//				
+//				for ( Download download: downloads ){
+//					
+//					Torrent torrent = download.getTorrent();
+//					
+//					if ( torrent != null && torrent.isSimpleTorrent()){
+//						
+//						String name = torrent.getFiles()[0].getName();
+//						
+//						if ( name.startsWith( "aefeatman_v_") && name.endsWith( ".zip" )){
+//							
+//							hit = download;
+//							
+//							break;
+//						}
+//					}
+//				}
+//				
+//				if ( hit == null ){
+//				
+//					extra = "The 'Vuze Feature Manager' plugin is required but isn't installed";
+//					
+//				}else{
+//					
+//					int	state = hit.getState();
+//					
+//					if (	(state == Download.ST_STOPPED && !hit.isComplete() ) || 
+//							state == Download.ST_ERROR ){
+//						
+//						extra = "The 'Vuze Feature Manager' plugin has failed to download - check your Library's detailed view for errors or stopped downloads";
+//						
+//					}else{
+//						
+//						extra = "The 'Vuze Feature Manager' plugin is currently downloading, please wait for it to complete and install";
+//					}
+//				}
+//			}else{
+//				
+//				PluginState ps = fm_pi.getPluginState();
+//				
+//				if ( !ps.isLoadedAtStartup()){
+//					
+//					extra = "You need to set the 'Vuze Feature Manager' plugin to 'load at startup' in the plugin options";
+//					
+//				}else if ( ps.isDisabled()){
+//					
+//					extra = "The 'Vuze Feature Manager' plugin needs to be enabled";
+//
+//				}else if ( !ps.isOperational()){
+//					
+//					extra = "The 'Vuze Feature Manager' plugin isn't operational";
+//				}
+//			}
+//			
+//			return( new PluginException( str + ": " + extra ));
+//			
+//		}catch( Throwable e ){
+//			
+//			return( new PluginException( str, e ));
+//		}
+//	}
 	
 	public Licence[] 
 	getLicences() 

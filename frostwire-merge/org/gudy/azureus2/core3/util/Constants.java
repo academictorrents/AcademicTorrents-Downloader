@@ -132,14 +132,14 @@ Constants
     //      2.0.8.3_CVS
     //      2.0.8.3_Bnn       // incremental build
   
-  public static String APP_NAME = "Vuze";
-  public static final String AZUREUS_NAME	  					= "Azureus";
-  public static final String AZUREUS_PROTOCOL_NAME_PRE_4813	  	= "Azureus";
-  public static final String AZUREUS_PROTOCOL_NAME	  			= "Vuze";
-  public static final String AZUREUS_VERSION  = "5.3.0.1";
-  public static final String BUILD_VERSION  = "@build.version@";   //Ant replace
+  public static String APP_NAME = "ATDownloader";
+  public static final String AZUREUS_NAME	  					= "ATDownloader";
+  public static final String AZUREUS_PROTOCOL_NAME_PRE_4813	  	= "ATDownloader";
+  public static final String AZUREUS_PROTOCOL_NAME	  			= "ATDownloader";
+  public static final String AZUREUS_VERSION  = "1";
+  public static final String BUILD_VERSION  = "1";   //Ant replace
   public static final String AZUREUS_SUBVER	  = "";
-  public static final byte[] VERSION_ID       = ("-" + "AZ" + "5301" + "-").getBytes();  //MUST be 8 chars long!
+  public static final byte[] VERSION_ID       = ("ATDL" + "001" + "-").getBytes();  //MUST be 8 chars long!
 
   private static final boolean FORCE_NON_CVS = System.getProperty( "az.force.noncvs", "0" ).equals( "1" );
   
