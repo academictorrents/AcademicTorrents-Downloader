@@ -3,10 +3,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -22,8 +23,6 @@ import org.gudy.azureus2.core3.download.DownloadManagerListener;
 import org.gudy.azureus2.core3.global.GlobalManager;
 import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
 import org.gudy.azureus2.core3.peer.PEPeer;
-import org.gudy.azureus2.plugins.PluginManager;
-import org.gudy.azureus2.plugins.PluginManagerDefaults;
 
 import smartnode.models.Entry;
 
@@ -43,7 +42,11 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 		System.setProperty("azureus.install.path",Main.ATDIR);
 		System.setProperty( "azureus.app.name","ATDownloader");
 		
-	    core = AzureusCoreFactory.create();
+		try{
+			core = AzureusCoreFactory.create();
+		}catch (Throwable re){
+			Main.println("Error starting core: " + re.getLocalizedMessage());
+		}
 		
 	    if (!core.isStarted())
 	    	core.start();
@@ -67,12 +70,16 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 //	    new PojoExplorer(core);
 //	    PojoExplorer.pausethread();
 
-	    
-	    
-	    
-	    
-		
+
 	}
+	
+	public void shutdown(){
+		Main.println("Shutting down...");
+		core.requestStop();
+		core.stop();
+	}
+	
+	
 	
 	public void download(Entry entry, String specificFile) throws InterruptedException, GlobalManagerDownloadRemovalVetoException, IOException {
 		
@@ -83,11 +90,11 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    
 	   // [Start/Stop Rules, Torrent Removal Rules, Share Hoster, Default Tracker Web, Core Update Checker, Core Patch Checker, Platform Checker, UPnP, DHT, DHT Tracker, Magnet URI Handler, External Seed, Local Tracker, Tracker Peer Auth, Network Status, Buddy, RSS]
 
-	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLATFORM_CHECKER, false);
-	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_PATCH_CHECKER, false);
-	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_UPDATE_CHECKER, false);
-	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLUGIN_UPDATE_CHECKER, false);
-	    
+//	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLATFORM_CHECKER, false);
+//	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_PATCH_CHECKER, false);
+//	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_CORE_UPDATE_CHECKER, false);
+//	    PluginManager.getDefaults().setDefaultPluginEnabled(PluginManagerDefaults.PID_PLUGIN_UPDATE_CHECKER, false);
+//	    
 	    
 
 	    
@@ -148,58 +155,53 @@ class DownloadStateListener implements DownloadManagerListener {
 								break;								
 							}
 							
-							// There is only one in the queue.
-							DownloadManager man = managers.get(0);
+							// maybe in the future we allways try ourself?
+//							core.getGlobalManager().getDownloadManagers().get(0).getPeerManager()
+//							.addPeer("127.0.0.1", 6801, 6801, false, null);
 							
-							List<String> peers = new ArrayList<String>();
-							int count = 0;
+							String peers = getPeerString(core);
 							
-							PriorityQueue<PEPeer> peerss = new PriorityQueue<PEPeer>(
-									Math.max(1,man.getCurrentPeers().length),
-									new Comparator<PEPeer>() {
-
-										@Override
-										public int compare(PEPeer o1, PEPeer o2) {
-											
-											long o1r = o1.getStats().getDataReceiveRate();
-											long o2r = o2.getStats().getDataReceiveRate();
-											
-											if (o2r > o1r)
-												return 1;
-											else if (o2r == o1r)
-												return 0;
-											else 
-												return -1;
-										}
-										
-									});
+							long totalReceived = 0;
+							long totalSize = 0;
+							long totalRemaining = 0;
 							
-							peerss.addAll(Arrays.asList(man.getCurrentPeers()));
 							
-							for (PEPeer peer : peerss){
+							for (DownloadManager man : managers){
 								
-								long dlrate = peer.getStats().getDataReceiveRate();
+								totalReceived += man.getStats().getDataReceiveRate();
 								
-								if (dlrate != 0){
-									count++;
-									String pstring = peer.getIPHostName();
-									
-									pstring = tryForDNSName(pstring);
-									
-									// only show some peers but show all edu
-									if (!(count > 3) || pstring.contains(".edu"))
-										peers.add(pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s");
-								}
+								totalSize += man.getSize();
+								
+								totalRemaining += man.getDiskManager().getRemainingExcludingDND();
 							}
+							
 							
 							for (int i = 0; i < 300; i++)
 								Main.print("\b");
+
+							
+							
+							// There is only one in the queue.
+							Main.print(Main.humanReadableByteCount(totalReceived, true) + "/s " + 
+									Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
+									+ ((totalSize - totalRemaining)/(totalSize*1.0)) + "%, " 
+									+ peers);
+							
 							Main.print("\r");
-							Main.print(Main.humanReadableByteCount(man.getStats().getDataReceiveRate(), true) + "/s " + 
-									Main.humanReadableByteCountRatio(man.getSize() - man.getDiskManager().getRemainingExcludingDND(), man.getSize(),true) + "/" + 
-									+ (man.getStats().getCompleted() / 10.0) + "%, " 
-									+ man.getNbSeeds() + " Mirrors " + peers.toString());
-							downloadCompleted = man.isDownloadComplete(true);
+							
+							
+							
+							
+							
+							
+							// There is only one in the queue.
+//							DownloadManager man = managers.get(0);
+//							Main.print(Main.humanReadableByteCount(man.getStats().getDataReceiveRate(), true) + "/s " + 
+//									Main.humanReadableByteCountRatio(man.getSize() - man.getDiskManager().getRemainingExcludingDND(), man.getSize(),true) + "/" + 
+//									+ (man.getStats().getCompleted() / 10.0) + "%, " 
+//									+ man.getNbSeeds() + " Mirrors " + peers.toString());
+//							downloadCompleted = man.isDownloadComplete(true);
+//							Main.print("\r");
 							// Check every 1 seconds on the progress
 							Thread.sleep(1000);
 						}
@@ -208,6 +210,7 @@ class DownloadStateListener implements DownloadManagerListener {
 					}
 
 				}
+				
 			};
 
 			Thread progressChecker = new Thread(checkAndPrintProgress);
@@ -217,12 +220,12 @@ class DownloadStateListener implements DownloadManagerListener {
 		case DownloadManager.STATE_CHECKING:
 			Main.println("Checking Existing Data..");
 		case DownloadManager.STATE_ERROR:
-			System.out.println("Error : ( Check Log " + manager.getErrorDetails());
+			//System.out.println("Error : ( Check Log " + manager.getErrorDetails());
 			
 		case DownloadManager.STATE_STOPPED:
 			Main.println("Stopped..");
 		case DownloadManager.STATE_ALLOCATING:
-			Main.println("Allocating Drive Space..");
+			Main.println("Allocating File Space..");
 		case DownloadManager.STATE_INITIALIZING:
 			Main.println("Initializing..");
 		default :
@@ -264,6 +267,94 @@ class DownloadStateListener implements DownloadManagerListener {
 	}
 	
 	
+	
+	public static String getPeerString(AzureusCore core) throws NamingException {
+
+
+		List<String> peers = new ArrayList<String>();
+		List<DownloadManager> managers = core.getGlobalManager().getDownloadManagers();
+		
+		
+		final Map<String, Long> rawPeers = new HashMap<String, Long>();
+		final Map<String, String> peerType = new HashMap<String, String>();
+		
+		for (DownloadManager m  : managers){
+			
+			for (PEPeer p : m.getPeerManager().getPeers()){
+				
+				Long speed = rawPeers.get(p.getIPHostName());
+				
+				Long speedLocal = p.getStats().getDataReceiveRate();
+				
+				if (speed != null)
+					speed = speed + speedLocal;
+				else
+					speed = speedLocal;
+				
+				String iphostname = p.getIPHostName();
+				rawPeers.put(iphostname, speed);
+				
+				String prot = p.getProtocol();
+				if (prot.contains("HTTP")){
+					prot = "ht";
+				}else if (prot.contains("FTP")){
+					prot = "ft";
+				}
+				
+				peerType.put(iphostname, prot);
+			}
+		}
+		
+		List<String> tosort = new ArrayList<String>(rawPeers.keySet());
+		Collections.sort(tosort, new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				
+				long o1r = rawPeers.get(o1);
+				long o2r = rawPeers.get(o2);
+				
+				if (o2r > o1r)
+					return 1;
+				else if (o2r == o1r)
+					return 0;
+				else 
+					return -1;
+			}
+		});
+		
+		
+		int count = 0;
+		for (String opstring : tosort){
+			
+			long dlrate = rawPeers.get(opstring);
+			
+			//if (dlrate != 0){
+				count++;
+				
+				String pstring = tryForDNSName(opstring);
+				
+				// only show some peers but show all edu
+				if (!(count > 3) || pstring.contains(".edu")){
+					
+					pstring = pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s" + " " + peerType.get(opstring);
+				
+				
+					peers.add(pstring);
+						
+				}
+				
+		}
+		
+//		for (int i = 0; i < peers.size() ; i++){
+//			
+//			peers.set(i, peers.get(i) + " " + peerType.get);
+//		}
+		
+		
+		return tosort.size() + " Mirrors " + peers.toString();
+		
+	}
 	
 	
 	public static String tryForDNSName(String pstring) throws NamingException{

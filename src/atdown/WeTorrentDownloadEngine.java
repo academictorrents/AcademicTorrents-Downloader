@@ -33,6 +33,12 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 		
 	}
 	
+	@Override
+	public void shutdown() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 	@Override
 	public void download(Entry entry, String specficFile) throws Exception {
