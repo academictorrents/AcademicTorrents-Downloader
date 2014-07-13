@@ -46,7 +46,7 @@ public class Main {
 		stdout = System.out;
 		stderr = System.err;
 		
-		Logger.allowLoggingToStdErr(true);
+		//Logger.allowLoggingToStdErr(true);
 		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
 		System.setErr(new PrintStream(new File(ATDIR + "log.err")));
 		
@@ -86,6 +86,7 @@ public class Main {
 		
 		//args = new String[]{"joseph-paul-cohen-publications"};
 		
+		//args = new String[]{"ffa02bdccbfd01ac5ce35c2bfee6210abb4ddd0f.torrent"};
 		
 		
 		
@@ -109,6 +110,8 @@ public class Main {
         	Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
         	String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
         	Entry e = new Entry(infohash);
+        	e.setName(meta.getName());
+        	e.setBibtex(meta.getComment());
         	e.setTorrentFile(torrent);
         	toget.add(e);
         }else if (input.startsWith("http")){
@@ -117,6 +120,8 @@ public class Main {
         	Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
         	String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
         	Entry e = new Entry(infohash);
+        	e.setName(meta.getName());
+        	e.setBibtex(meta.getComment());
         	e.setTorrentFile(torrent);
         	toget.add(e);
         	
@@ -133,6 +138,8 @@ public class Main {
             		Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
             		String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
                 	Entry e = new Entry(infohash);
+                	e.setName(meta.getName());
+                	e.setBibtex(meta.getComment());
                 	e.setTorrentFile(torrent);
                 	toget.add(e);
 
@@ -217,6 +224,8 @@ public class Main {
     			de.download(e, null);
     		}
         }
+        
+        //de.shutdown();
 		
 		
 	}
@@ -225,18 +234,18 @@ public class Main {
 	
 	public static String humanReadableByteCount(long bytes, boolean si) {
 	    int unit = si ? 1000 : 1024;
-	    if (bytes < unit) return bytes + " B";
+	    if (bytes < unit) return bytes + "B";
 	    int exp = (int) (Math.log(bytes) / Math.log(unit));
 	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-	    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	    return String.format("%.1f%sB", bytes / Math.pow(unit, exp), pre);
 	}
 	
 	public static String humanReadableByteCountRatio(long bytes, long totbytes, boolean si) {
 	    int unit = si ? 1000 : 1024;
-	    if (totbytes < unit) return bytes + "/" + totbytes + " B";
+	    if (totbytes < unit) return bytes + "/" + totbytes + "B";
 	    int exp = (int) (Math.log(totbytes) / Math.log(unit));
 	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-	    return String.format("%.1f/%.1f %sB", bytes / Math.pow(unit, exp),  totbytes / Math.pow(unit, exp), pre);
+	    return String.format("%.1f/%.1f%sB", bytes / Math.pow(unit, exp),  totbytes / Math.pow(unit, exp), pre);
 	}
 	
 	
