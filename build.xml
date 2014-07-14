@@ -36,6 +36,7 @@ Joseph Paul Cohen 2013/2014
             <src path="wetorrent"/>
             <src path="frostwire-merge"/>
             <src path="eclipse"/>
+        	<src path="jline"/>
             <classpath refid="classpath"/>
         </javac>
     </target>

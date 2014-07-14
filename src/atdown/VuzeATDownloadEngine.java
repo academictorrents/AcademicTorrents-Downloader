@@ -16,8 +16,6 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
-import org.apache.commons.io.FileUtils;
-import org.fusesource.jansi.Ansi;
 import org.gudy.azureus2.core3.disk.DiskManagerFileInfo;
 import org.gudy.azureus2.core3.download.DownloadManager;
 import org.gudy.azureus2.core3.download.DownloadManagerListener;
@@ -100,14 +98,14 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    File downloadDirectory = new File("."); //Destination directory
 	    //if(downloadDirectory.exists() == false) downloadDirectory.mkdir();
 	    
-	    File downloadedTorrentFile = new File(Main.ATDIR + "/" + entry.getInfohash() + ".torrent");
+	    //File downloadedTorrentFile = new File(Main.ATDIR + "/" + entry.getInfohash() + ".torrent");
 	    
 	    //Start the download of the torrent 
 	    GlobalManager globalManager = core.getGlobalManager();
 	    
-	    FileUtils.copyInputStreamToFile(new ByteArrayInputStream(entry.getTorrentFile()), downloadedTorrentFile);
+	    //FileUtils.copyInputStreamToFile(new ByteArrayInputStream(entry.getTorrentFile()), downloadedTorrentFile);
 	    
-	    DownloadManager manager = globalManager.addDownloadManager(downloadedTorrentFile.getAbsolutePath(),
+	    DownloadManager manager = globalManager.addDownloadManager(Main.ATDIR + entry.getInfohash() + ".torrent",
 	                                                               downloadDirectory.getAbsolutePath());
 	    
 	    //manager.getDiskManager().
@@ -238,7 +236,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
-			Main.println("\nChecking Existing Data.." + manager.getDisplayName());
+			//Main.println("Checking Existing Data.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_ERROR:
 			//System.out.println("\nError : ( Check Log " + manager.getErrorDetails());

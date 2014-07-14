@@ -4,17 +4,21 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bitlet.wetorrent.Metafile;
@@ -29,7 +33,7 @@ import smartnode.utils.ATLogger.LogLevel;
 public class Main {
 
 	final public static int TIMEOUT = 3000;
-	final public static String ATDIR = ".atdown/";
+	final public static String ATDIR = System.getProperty("user.home") + "/.atdown/";
 	
 	private static PrintStream stdout = null;
 	private static PrintStream stderr = null;
@@ -92,7 +96,7 @@ public class Main {
 		
 		//args = new String[]{"ffa02bdccbfd01ac5ce35c2bfee6210abb4ddd0f.torrent"};
 		
-		args = new String[]{"tex"};
+		//args = new String[]{"tex"};
 		
 		//args = new String[]{"gnu-radio-rf-captures", "ls"};
 		//args = new String[]{"massgis-datasets", "ls"};
@@ -186,8 +190,9 @@ public class Main {
         			for (Entry entry : collection.values()){
         				count++;
         				try{
+        					//System.out.println(entry.getInfohash());
         					byte[] torrent = getFromCacheOrDownload(entry.getInfohash());
-
+        					
 	        				Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
 	        				String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
 	        				entry.setTorrentFile(torrent);
@@ -199,8 +204,8 @@ public class Main {
 	        				
 	        				toget.add(entry);
         				
-        				}catch(FileNotFoundException ex){
-        					new Exception("Error with entry: " + entry.getInfohash());
+        				}catch(Exception ex){
+        					Main.println("Error with entry: " + entry.getInfohash());
         				}
         				
         				
@@ -282,21 +287,30 @@ public class Main {
 	
 	private static byte[] getFromCacheOrDownload(String infohash) throws MalformedURLException, IOException{
 		
-//		try{
-//			
-//			byte[] torrent = IOUtils.toByteArray(new FileReader(new File(Main.ATDIR + infohash + ".torrent")));
-//			
-//			return torrent;
-//			
-//		}catch(Exception e){
+		try{
+			
+			byte[] torrent = IOUtils.toByteArray(new FileInputStream(new File(Main.ATDIR + infohash + ".torrent")));
+			
+			// verify it works
+			Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
+			
+			return torrent;
+			
+		}catch(Exception e){
 
 			byte[] torrent = IOUtils.toByteArray(new URL("http://academictorrents.com/download/" + infohash));
 
+			FileOutputStream fw = new FileOutputStream(Main.ATDIR + infohash + ".torrent");
+			IOUtils.copy(new ByteArrayInputStream(torrent), fw);
+			fw.flush();
+			fw.close();
+
+			
 			return torrent;
 			
 		}
-//		
-//	}
+		
+	}
 	
 	
 
