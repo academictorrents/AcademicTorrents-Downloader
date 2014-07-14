@@ -11,13 +11,8 @@
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-2.3.jar"/>
 	<classpathentry kind="lib" path="lib/javacsv.jar" sourcepath="lib/javacsvsrc.zip"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/gettext-commons.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/messages.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/lib/jars/slf4j-jdk14-1.7.5.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/common/vuze/azureus2/lib/apple-extensions.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/common/vuze/azureus2/lib/swt-carbon.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/common/vuze/azureus2/lib/swt-cocoa.jar"/>
-	<classpathentry kind="lib" path="frostwire-desktop/common/vuze/azureus2/lib/swt-win32.jar"/>
+	<classpathentry kind="lib" path="lib/swt-carbon.jar"/>
+	<classpathentry kind="lib" path="lib/swt-cocoa.jar"/>
+	<classpathentry kind="lib" path="lib/swt-win32.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

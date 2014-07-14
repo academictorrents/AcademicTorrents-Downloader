@@ -214,8 +214,6 @@ public class Main {
         
         DownloadEngine de;
         
-        de = new VuzeATDownloadEngine();
-        
         if (args.length >= 2){
         	
         	// special op
@@ -233,6 +231,8 @@ public class Main {
         		
         	}else{
         		
+        		de = new VuzeATDownloadEngine();
+        		
         		// download specific files
         		// NOT WORKING YET
         		for (Entry e : toget){
@@ -242,6 +242,7 @@ public class Main {
         }else{
         
         	// just resume or start download it
+        	de = new VuzeATDownloadEngine();
         	
     		for (Entry e : toget){
     			de.download(e, null);

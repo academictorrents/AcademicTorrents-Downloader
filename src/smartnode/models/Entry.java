@@ -56,7 +56,7 @@ public class Entry {
     public Entry(String type, String name, String infohash, long total_size_bytes, int mirrors, int downloaders, int times_completed, long date_added, long date_modified) {
 
         this.type = EntryType.valueOf(type);
-        this.name = name;
+        this.setName(name);
         this.infohash = infohash;
         this.totalSizeBytes = total_size_bytes;
         this.mirrors = mirrors;
@@ -72,6 +72,7 @@ public class Entry {
      */
     public EntryType getType() { return type; }
 
+    
     /**
      *
      * @return
@@ -199,4 +200,8 @@ public class Entry {
     public void setBibtex(String bibtex) {
         this.bibtex = bibtex;
     }
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

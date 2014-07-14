@@ -191,18 +191,25 @@ class DownloadStateListener implements DownloadManagerListener {
 							}
 							
 							
+							
+							for (int i = 0; i < 300; i++)
+								Main.print("\b");
+							
+							for (int i = 0; i < 300; i++)
+								Main.print(" ");
+							
 							for (int i = 0; i < 300; i++)
 								Main.print("\b");
 
 							
-							
+							Main.print("\r");
 							// There is only one in the queue.
 							Main.print(Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
 									Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
 									+ ((int)((totalSize - totalRemaining)/(totalSize*1.0)*100)) + "%, " 
 									+ peers);
 							
-							Main.print("\r");
+							
 							
 							
 							
