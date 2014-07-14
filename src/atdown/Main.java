@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.bitlet.wetorrent.Metafile;
 import org.gudy.azureus2.core3.logging.Logger;
 
+import smartnode.models.Collection;
 import smartnode.models.Entry;
 import smartnode.utils.ATFetcher;
 import smartnode.utils.ATLogger;
@@ -95,15 +96,37 @@ public class Main {
 		//args = new String[]{"journal-of-machine-learning-research","ls"};
 		
 		if (args.length < 1){
-			Main.println("Usage: atdown INFOHASH");
+			Main.println("Usage: atdown ls // list connections");
+			Main.println("Usage: atdown INFOHASH // download entry");
+			Main.println("Usage: atdown INFOHASH ls // list contents of entry");
 			System.exit(0);
 		}
 		
 		String input = args[0];//"7858fdf307d9fe94aeaaeaeadfc554988b80a3ce";
 
+		
+		if (input.equals("ls")){
+			
+			Main.println("Fetching all collections..");
+			ATLogger logger = new ATLogger(ATDIR + "log.atlogger", LogLevel.Error);
+			ArrayList<Collection> collections = new ATFetcher(logger).getCollections();
+			
+			Main.println(String.format("|%-65s|%-25.25s|%6s|%9s|", "url-name", "Name", "count", "total size"));
+			for (Collection c : collections){
+				
+				
+				Main.println(String.format("|%-65s|%-25.25s|%6s|%9s|", c.getUrlname(), c.getName(), c.getTorrent_count(), Main.humanReadableByteCount(c.getTotal_size_bytes(),true)));
+				//Main.println(c.getUrlname() + ", " + c.getName() + ", " + c.getTorrent_count() + " entries, " + Main.humanReadableByteCount(c.getTotal_size_bytes(),true));
+				
+			}
+			System.exit(0);
+			
+		}
+		
+		
         // read torrent filename from command line arg
         List<Entry> toget = new ArrayList<Entry>();
-
+        
         if (new File(input).exists() && !(new File(input).isDirectory())){
         	
         	byte[] torrent = IOUtils.toByteArray(new FileInputStream(new File(input)));

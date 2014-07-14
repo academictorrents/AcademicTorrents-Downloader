@@ -35,9 +35,7 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 
 	AzureusCore core;
 	
-	public VuzeATDownloadEngine() throws Exception {
-		// TODO Auto-generated constructor stub
-		
+	public VuzeATDownloadEngine() throws Exception {		
 		
 		System.setProperty("azureus.install.path",Main.ATDIR);
 		System.setProperty( "azureus.app.name","ATDownloader");
@@ -110,6 +108,16 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	    
 	    DownloadManager manager = globalManager.addDownloadManager(downloadedTorrentFile.getAbsolutePath(),
 	                                                               downloadDirectory.getAbsolutePath());
+	    
+	    //manager.getDiskManager().
+	    
+//	    for (DiskManagerFileInfo i : manager.getDiskManager().getFiles()){
+//	    	
+////	    	i.
+//	    }
+	    
+	    
+	    
 	    //Main.println("Downloading");
 	    DownloadManagerListener listener = new DownloadStateListener();
 	    manager.addListener(listener);    
@@ -136,7 +144,7 @@ class DownloadStateListener implements DownloadManagerListener {
 	public void stateChanged(DownloadManager manager, int state) {
 		switch (state) {
 		case DownloadManager.STATE_DOWNLOADING:
-			Main.println("Downloading....");
+			//Main.println("Downloading....");
 			// Start a new daemon thread periodically check
 			// the progress of the upload and print it out
 			// to the command line
@@ -161,18 +169,25 @@ class DownloadStateListener implements DownloadManagerListener {
 							
 							String peers = getPeerString(core);
 							
-							long totalReceived = 0;
+							long totalReceivedRate = 0;
 							long totalSize = 0;
 							long totalRemaining = 0;
 							
 							
 							for (DownloadManager man : managers){
 								
-								totalReceived += man.getStats().getDataReceiveRate();
-								
-								totalSize += man.getSize();
-								
-								totalRemaining += man.getDiskManager().getRemainingExcludingDND();
+								try{
+									//totalRemaining += man.getDiskManager().getRemainingExcludingDND();
+									
+									totalRemaining += man.getDiskManager().getRemaining();
+									
+									totalReceivedRate += man.getStats().getDataReceiveRate();
+									
+									totalSize += man.getSize();
+										
+								}catch(Exception e){
+									System.out.println("Error with stats list " + man.getDisplayName());
+								}
 							}
 							
 							
@@ -182,9 +197,9 @@ class DownloadStateListener implements DownloadManagerListener {
 							
 							
 							// There is only one in the queue.
-							Main.print(Main.humanReadableByteCount(totalReceived, true) + "/s " + 
+							Main.print(Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
 									Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
-									+ ((totalSize - totalRemaining)/(totalSize*1.0)) + "%, " 
+									+ ((int)((totalSize - totalRemaining)/(totalSize*1.0)*100)) + "%, " 
 									+ peers);
 							
 							Main.print("\r");
@@ -218,16 +233,20 @@ class DownloadStateListener implements DownloadManagerListener {
 			progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
-			Main.println("Checking Existing Data..");
+			//Main.println("\nChecking Existing Data.." + manager.getDisplayName());
+			break;
 		case DownloadManager.STATE_ERROR:
-			//System.out.println("Error : ( Check Log " + manager.getErrorDetails());
-			
+			//System.out.println("\nError : ( Check Log " + manager.getErrorDetails());
+			break;
 		case DownloadManager.STATE_STOPPED:
-			Main.println("Stopped..");
+			//Main.println("\nStopped.." + manager.getDisplayName());
+			break;
 		case DownloadManager.STATE_ALLOCATING:
-			Main.println("Allocating File Space..");
+			//Main.println("\nAllocating File Space.." + manager.getDisplayName());
+			break;
 		case DownloadManager.STATE_INITIALIZING:
-			Main.println("Initializing..");
+			//Main.println("\nInitializing.." + manager.getDisplayName());
+			break;
 		default :
 			//Main.println("state:" + state);
 			
@@ -279,29 +298,34 @@ class DownloadStateListener implements DownloadManagerListener {
 		final Map<String, String> peerType = new HashMap<String, String>();
 		
 		for (DownloadManager m  : managers){
-			
-			for (PEPeer p : m.getPeerManager().getPeers()){
-				
-				Long speed = rawPeers.get(p.getIPHostName());
-				
-				Long speedLocal = p.getStats().getDataReceiveRate();
-				
-				if (speed != null)
-					speed = speed + speedLocal;
-				else
-					speed = speedLocal;
-				
-				String iphostname = p.getIPHostName();
-				rawPeers.put(iphostname, speed);
-				
-				String prot = p.getProtocol();
-				if (prot.contains("HTTP")){
-					prot = "ht";
-				}else if (prot.contains("FTP")){
-					prot = "ft";
+			try{
+				for (PEPeer p : m.getPeerManager().getPeers()){
+					
+					Long speed = rawPeers.get(p.getIPHostName());
+					
+					Long speedLocal = p.getStats().getDataReceiveRate();
+					
+					if (speed != null)
+						speed = speed + speedLocal;
+					else
+						speed = speedLocal;
+					
+					String iphostname = p.getIPHostName();
+					rawPeers.put(iphostname, speed);
+					
+					String prot = p.getProtocol();
+					if (prot.contains("HTTP")){
+						prot = "http";
+					}else if (prot.contains("FTP")){
+						prot = "ftp";
+					}else{
+						prot = "";
+					}
+					
+					peerType.put(iphostname, prot);
 				}
-				
-				peerType.put(iphostname, prot);
+			}catch(Exception e){
+				System.out.println("Error with peer list " + m.getDisplayName());
 			}
 		}
 		
