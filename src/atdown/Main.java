@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +92,7 @@ public class Main {
 		
 		//args = new String[]{"ffa02bdccbfd01ac5ce35c2bfee6210abb4ddd0f.torrent"};
 		
-		
+		args = new String[]{"tex"};
 		
 		//args = new String[]{"gnu-radio-rf-captures", "ls"};
 		//args = new String[]{"massgis-datasets", "ls"};
@@ -137,7 +140,7 @@ public class Main {
         	e.setBibtex(meta.getComment());
         	e.setTorrentFile(torrent);
         	toget.add(e);
-        }else if (input.startsWith("http")){
+        }else if (input.startsWith("http") || input.startsWith("ftp")){
         	
         	byte[] torrent = IOUtils.toByteArray(new URL(input));
         	Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
@@ -157,7 +160,7 @@ public class Main {
                 	if (input.length() != 40)
                 		throw new Exception("Cannot be hash, not a big deal");
         			
-            		byte[] torrent = IOUtils.toByteArray(new URL("http://academictorrents.com/download/" + input));
+            		byte[] torrent = getFromCacheOrDownload(input);
             		Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
             		String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
                 	Entry e = new Entry(infohash);
@@ -183,7 +186,7 @@ public class Main {
         			for (Entry entry : collection.values()){
         				count++;
         				try{
-        					byte[] torrent = IOUtils.toByteArray(new URL("http://academictorrents.com/download/" + entry.getInfohash()));
+        					byte[] torrent = getFromCacheOrDownload(entry.getInfohash());
 
 	        				Metafile meta = new Metafile(new ByteArrayInputStream(torrent));
 	        				String infohash = DatatypeConverter.printHexBinary(meta.getInfoSha1());
@@ -272,10 +275,29 @@ public class Main {
 	    return String.format("%.1f/%.1f%sB", bytes / Math.pow(unit, exp),  totbytes / Math.pow(unit, exp), pre);
 	}
 	
-	
-	
 	public static String clean(String s){
 		return s.replaceAll("[^\\x00-\\x7f]", "");
 	}
+	
+	
+	private static byte[] getFromCacheOrDownload(String infohash) throws MalformedURLException, IOException{
+		
+//		try{
+//			
+//			byte[] torrent = IOUtils.toByteArray(new FileReader(new File(Main.ATDIR + infohash + ".torrent")));
+//			
+//			return torrent;
+//			
+//		}catch(Exception e){
+
+			byte[] torrent = IOUtils.toByteArray(new URL("http://academictorrents.com/download/" + infohash));
+
+			return torrent;
+			
+		}
+//		
+//	}
+	
+	
 
 }

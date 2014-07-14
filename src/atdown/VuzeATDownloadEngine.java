@@ -17,6 +17,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
 import org.apache.commons.io.FileUtils;
+import org.fusesource.jansi.Ansi;
 import org.gudy.azureus2.core3.disk.DiskManagerFileInfo;
 import org.gudy.azureus2.core3.download.DownloadManager;
 import org.gudy.azureus2.core3.download.DownloadManagerListener;
@@ -126,7 +127,6 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 //	    PojoExplorer.pausethread();
 	    globalManager.startAllDownloads();
 	    
-	    
 	    //core.requestStop();
 
 	}
@@ -190,24 +190,22 @@ class DownloadStateListener implements DownloadManagerListener {
 								}
 							}
 							
+							int terminalWidth = jline.TerminalFactory.get().getWidth();
 							
-							
-							for (int i = 0; i < 300; i++)
+							for (int i = 0; i < terminalWidth; i++)
 								Main.print("\b");
 							
-							for (int i = 0; i < 300; i++)
+							for (int i = 0; i < terminalWidth; i++)
 								Main.print(" ");
 							
-							for (int i = 0; i < 300; i++)
-								Main.print("\b");
+							Main.print("\r");
 
 							
-							Main.print("\r");
 							// There is only one in the queue.
-							Main.print(Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
+							Main.print(String.format("%." + (terminalWidth-1) + "s",Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
 									Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
 									+ ((int)((totalSize - totalRemaining)/(totalSize*1.0)*100)) + "%, " 
-									+ peers);
+									+ peers));
 							
 							
 							
@@ -240,7 +238,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
-			//Main.println("\nChecking Existing Data.." + manager.getDisplayName());
+			Main.println("\nChecking Existing Data.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_ERROR:
 			//System.out.println("\nError : ( Check Log " + manager.getErrorDetails());
