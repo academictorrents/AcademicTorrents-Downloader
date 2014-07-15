@@ -65,7 +65,7 @@ public class Main {
 	
 		new File(ATDIR).mkdirs();
 		
-		List<String> argsl = Arrays.asList(args);
+		List<String> argsl = new ArrayList<String>(Arrays.asList(args));
 		
 		if (!argsl.remove("-v")){
 			hardLogging();
