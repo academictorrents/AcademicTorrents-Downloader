@@ -143,6 +143,16 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 
 class DownloadStateListener implements DownloadManagerListener {
 
+	Thread progressChecker;
+	
+	public DownloadStateListener() {
+		
+		progressChecker = new Thread(new ATThreadChecker());
+		progressChecker.setDaemon(true);
+		
+	}
+
+	
 	public void stateChanged(DownloadManager manager, int state) {
 		switch (state) {
 		case DownloadManager.STATE_DOWNLOADING:
@@ -150,94 +160,8 @@ class DownloadStateListener implements DownloadManagerListener {
 			// Start a new daemon thread periodically check
 			// the progress of the upload and print it out
 			// to the command line
-			Runnable checkAndPrintProgress = new Runnable() {
-
-				public void run() {
-					try {
-						boolean downloadCompleted = false;
-						while (!downloadCompleted) {
-							AzureusCore core = AzureusCoreFactory.getSingleton();
-							List<DownloadManager> managers = core.getGlobalManager().getDownloadManagers();
-
-							if (managers.size() < 1){
-								Main.println("Download Halted!");
-								downloadCompleted = true;
-								break;								
-							}
-							
-							// maybe in the future we allways try ourself?
-//							core.getGlobalManager().getDownloadManagers().get(0).getPeerManager()
-//							.addPeer("127.0.0.1", 6801, 6801, false, null);
-							
-							String peers = getPeerString(core);
-							
-							long totalReceivedRate = 0;
-							long totalSize = 0;
-							long totalRemaining = 0;
-							
-							
-							for (DownloadManager man : managers){
-								
-								try{
-									//totalRemaining += man.getDiskManager().getRemainingExcludingDND();
-									
-									totalRemaining += man.getDiskManager().getRemaining();
-									
-									totalReceivedRate += man.getStats().getDataReceiveRate();
-									
-									totalSize += man.getSize();
-										
-								}catch(Exception e){
-									System.out.println("Error with stats list " + man.getDisplayName());
-								}
-							}
-							
-							int terminalWidth = jline.TerminalFactory.get().getWidth();
-							
-							for (int i = 0; i < terminalWidth; i++)
-								Main.print("\b");
-							
-							for (int i = 0; i < terminalWidth; i++)
-								Main.print(" ");
-							
-							Main.print("\r");
-
-							
-							// There is only one in the queue.
-							Main.print(String.format("%." + (terminalWidth-1) + "s",Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
-									Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
-									+ ((int)((totalSize - totalRemaining)/(totalSize*1.0)*100)) + "%, " 
-									+ peers));
-							
-							
-							
-							
-							
-							
-							
-							
-							// There is only one in the queue.
-//							DownloadManager man = managers.get(0);
-//							Main.print(Main.humanReadableByteCount(man.getStats().getDataReceiveRate(), true) + "/s " + 
-//									Main.humanReadableByteCountRatio(man.getSize() - man.getDiskManager().getRemainingExcludingDND(), man.getSize(),true) + "/" + 
-//									+ (man.getStats().getCompleted() / 10.0) + "%, " 
-//									+ man.getNbSeeds() + " Mirrors " + peers.toString());
-//							downloadCompleted = man.isDownloadComplete(true);
-//							Main.print("\r");
-							// Check every 1 seconds on the progress
-							Thread.sleep(1000);
-						}
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-
-				}
-				
-			};
-
-			Thread progressChecker = new Thread(checkAndPrintProgress);
-			progressChecker.setDaemon(true);
-			progressChecker.start();
+			if (!progressChecker.isAlive())
+				progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
 			Main.println("Checking Existing Data.." + manager.getDisplayName());
@@ -260,6 +184,94 @@ class DownloadStateListener implements DownloadManagerListener {
 		}
 	}
 
+	static class ATThreadChecker implements Runnable{
+
+		public void run() {
+			try {
+				boolean downloadCompleted = false;
+				while (!downloadCompleted) {
+					AzureusCore core = AzureusCoreFactory.getSingleton();
+					List<DownloadManager> managers = core.getGlobalManager().getDownloadManagers();
+
+					if (managers.size() < 1){
+						Main.println("Download Halted!");
+						downloadCompleted = true;
+						break;								
+					}
+					
+					// maybe in the future we allways try ourself?
+//					core.getGlobalManager().getDownloadManagers().get(0).getPeerManager()
+//					.addPeer("127.0.0.1", 6801, 6801, false, null);
+					
+					String peers = getPeerString(core);
+					
+					long totalReceivedRate = 0;
+					long totalSize = 0;
+					long totalRemaining = 0;
+					
+					
+					for (DownloadManager man : managers){
+						
+						try{
+							//totalRemaining += man.getDiskManager().getRemainingExcludingDND();
+							
+							totalRemaining += man.getDiskManager().getRemaining();
+							
+							totalReceivedRate += man.getStats().getDataReceiveRate();
+							
+							totalSize += man.getSize();
+								
+						}catch(Exception e){
+							System.out.println("Error with stats list " + man.getDisplayName());
+						}
+					}
+					
+					int terminalWidth = jline.TerminalFactory.get().getWidth();
+					
+					for (int i = 0; i < terminalWidth; i++)
+						Main.print("\b");
+					
+					for (int i = 0; i < terminalWidth; i++)
+						Main.print(" ");
+					
+					Main.print("\r");
+
+					
+					// There is only one in the queue.
+					Main.print(String.format("%." + (terminalWidth-1) + "s",Main.humanReadableByteCount(totalReceivedRate, true) + "/s " + 
+							Main.humanReadableByteCountRatio(totalSize - totalRemaining, totalSize, true) + "/" + 
+							+ ((int)((totalSize - totalRemaining)/(totalSize*1.0)*100)) + "%, " 
+							+ peers));
+					
+					
+					
+					
+					
+					
+					
+					
+					// There is only one in the queue.
+//					DownloadManager man = managers.get(0);
+//					Main.print(Main.humanReadableByteCount(man.getStats().getDataReceiveRate(), true) + "/s " + 
+//							Main.humanReadableByteCountRatio(man.getSize() - man.getDiskManager().getRemainingExcludingDND(), man.getSize(),true) + "/" + 
+//							+ (man.getStats().getCompleted() / 10.0) + "%, " 
+//							+ man.getNbSeeds() + " Mirrors " + peers.toString());
+//					downloadCompleted = man.isDownloadComplete(true);
+//					Main.print("\r");
+					// Check every 1 seconds on the progress
+					Thread.sleep(1000);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+		
+	};
+	
+	
+	
+	
 	public void downloadComplete(DownloadManager manager) {
 		Main.println("Download Completed");
 		AzureusCore core = AzureusCoreFactory.getSingleton();
