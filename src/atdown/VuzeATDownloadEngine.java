@@ -72,8 +72,12 @@ public class VuzeATDownloadEngine implements DownloadEngine{
 	
 	public void shutdown(){
 		Main.println("Shutting down...");
-		core.requestStop();
-		core.stop();
+		try {
+			core.requestStop();
+		} catch (AzureusCoreException aze) {
+			Main.println("Could not end session gracefully - forcing exit.....");
+			core.stop();
+		}
 	}
 	
 	
@@ -236,7 +240,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			progressChecker.start();
 			break;
 		case DownloadManager.STATE_CHECKING:
-			//Main.println("Checking Existing Data.." + manager.getDisplayName());
+			Main.println("Checking Existing Data.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_ERROR:
 			//System.out.println("\nError : ( Check Log " + manager.getErrorDetails());
@@ -259,12 +263,16 @@ class DownloadStateListener implements DownloadManagerListener {
 	public void downloadComplete(DownloadManager manager) {
 		Main.println("Download Completed");
 		AzureusCore core = AzureusCoreFactory.getSingleton();
-		try {
-			core.requestStop();
-		} catch (AzureusCoreException aze) {
-			Main.println("Could not end session gracefully - "
-					+ "forcing exit.....");
-			core.stop();
+		
+		// if done
+		if (core.getGlobalManager().isSeedingOnly()){
+			
+			try {
+				core.requestStop();
+			} catch (AzureusCoreException aze) {
+				Main.println("Could not end session gracefully - forcing exit.....");
+				core.stop();
+			}
 		}
 	}
 

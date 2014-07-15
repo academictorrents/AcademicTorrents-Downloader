@@ -149,7 +149,7 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
         //System.out.println(metafile.getAnnounceList());
         
         if (metafile.isSingleFile()){
-        	 Main.println(metafile.getName());
+        	 Main.println(entry.getInfohash() + "/" + metafile.getName());
         }else{
 	        for (Object elem : metafile.getFiles()) {
 	            Map file = (Map) elem;
@@ -161,7 +161,7 @@ public class WeTorrentDownloadEngine  implements DownloadEngine{
 	                byte[] pathElem = ((ByteBuffer) pathIterator.next()).array();
 	                pathName += "/" + new String(pathElem);
 	            }
-	            Main.println(Main.clean(pathName));
+	            Main.println(entry.getInfohash() + "/" + Main.clean(pathName));
 	        }
         }
         
