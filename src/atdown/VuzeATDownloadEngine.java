@@ -243,16 +243,16 @@ class DownloadStateListener implements DownloadManagerListener {
 			Main.println("Checking Existing Data.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_ERROR:
-			//System.out.println("\nError : ( Check Log " + manager.getErrorDetails());
+			System.out.println("\nError : ( Check Log " + manager.getErrorDetails());
 			break;
 		case DownloadManager.STATE_STOPPED:
 			//Main.println("\nStopped.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_ALLOCATING:
-			//Main.println("\nAllocating File Space.." + manager.getDisplayName());
+			Main.println("\nAllocating File Space.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_INITIALIZING:
-			//Main.println("\nInitializing.." + manager.getDisplayName());
+			Main.println("\nInitializing.." + manager.getDisplayName());
 			break;
 		default :
 			//Main.println("state:" + state);
