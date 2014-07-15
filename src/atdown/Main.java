@@ -36,8 +36,8 @@ public class Main {
 	final public static int TIMEOUT = 3000;
 	final public static String ATDIR = System.getProperty("user.home") + "/.atdown/";
 	
-	private static PrintStream stdout = null;
-	private static PrintStream stderr = null;
+	private static PrintStream stdout = System.out;
+	private static PrintStream stderr = System.err;
 	
 	public static void println(String s){
 		
@@ -51,9 +51,6 @@ public class Main {
 	
 	
 	private static void hardLogging() throws FileNotFoundException{
-		
-		stdout = System.out;
-		stderr = System.err;
 		
 		//Logger.allowLoggingToStdErr(true);
 		System.setOut(new PrintStream(new File(ATDIR + "log.out")));
