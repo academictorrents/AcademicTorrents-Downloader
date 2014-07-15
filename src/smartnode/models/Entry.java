@@ -38,7 +38,7 @@ public class Entry {
     * Used for atdownloader
     */
     public Entry(String infohash) {
-    	this.infohash = infohash;
+    	this.infohash = infohash.toLowerCase();
     }
 
     /**
