@@ -290,6 +290,8 @@ public class Main {
 	
 	private static byte[] getFromCacheOrDownload(String infohash) throws MalformedURLException, IOException{
 		
+		infohash = infohash.toLowerCase();
+		
 		try{
 			
 			byte[] torrent = IOUtils.toByteArray(new FileInputStream(new File(Main.ATDIR + infohash + ".torrent")));
