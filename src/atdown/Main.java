@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -63,14 +64,19 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 	
 		new File(ATDIR).mkdirs();
-		hardLogging();
+		
+		List<String> argsl = Arrays.asList(args);
+		
+		if (!argsl.remove("-v")){
+			hardLogging();
+		}
 		
 		
 		Main.println("Welcome to the Academic Torrents Download tool!");
 		
 		try{
 			
-			main2(args);
+			main2(argsl.toArray(new String[]{}));
 		}catch(Exception e){
 			
 			Main.println("Error: " + e.getMessage());
