@@ -186,7 +186,14 @@ import com.aelitis.azureus.core.AzureusCoreFactory;
 					// only show some peers but show all edu
 					if (!(count > 3) || pstring.contains(".edu")){
 						
-						pstring = pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s" + " " + peerType.get(opstring);
+						String type = peerType.get(opstring);
+						
+						
+						// add space
+						if (type != "")
+							type = " " + type;
+						
+						pstring = pstring + " " + Main.humanReadableByteCount(dlrate, true) + "/s" + type;
 					
 					
 						peers.add(pstring);
