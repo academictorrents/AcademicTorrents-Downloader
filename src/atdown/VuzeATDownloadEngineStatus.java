@@ -134,13 +134,18 @@ import com.aelitis.azureus.core.AzureusCoreFactory;
 						rawPeers.put(iphostname, speed);
 						
 						String prot = p.getProtocol();
-						if (prot.contains("HTTP")){
-							prot = "http";
-						}else if (prot.contains("FTP")){
-							prot = "ftp";
-						}else{
+//						if (prot.contains("HTTP")){
+//							prot = "http";
+//						}else if (prot.contains("FTP")){
+//							prot = "ftp";
+//						}else{
+//							prot = "";
+//						}
+						
+						if (prot.contains("TCP")){
 							prot = "";
 						}
+						
 						
 						peerType.put(iphostname, prot);
 					}
