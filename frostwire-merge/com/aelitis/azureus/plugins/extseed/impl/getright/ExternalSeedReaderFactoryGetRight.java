@@ -115,7 +115,7 @@ ExternalSeedReaderFactoryGetRight
 				
 				for (int i=0;i<urls.size();i++){
 					
-					if ( readers.size() > 10 ){
+					if ( readers.size() > 20 ){
 						
 						Debug.out( "Too many GR seeds, truncating" );
 						
