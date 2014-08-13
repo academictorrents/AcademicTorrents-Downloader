@@ -1,13 +1,16 @@
 package smartnode.utils;
-
-import smartnode.models.Entry;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Queue;
+
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
+import atdown.Main;
 
 /**
  * Created by nogueira on 7/2/14.
@@ -18,6 +21,9 @@ public class ATLogger {
     Date date;
     LogLevel logger_level;
 
+    
+    Queue<String> queue = new CircularFifoQueue<String>(10);
+    
     public enum LogLevel{
         Error, Info, Warning, Debug
     }
@@ -40,7 +46,13 @@ public class ATLogger {
         }
 
         try {
-            log_file_writer  = new BufferedWriter(new FileWriter(log_file));
+            log_file_writer  = new BufferedWriter(new FileWriter(log_file)){
+            	@Override
+            	public void write(String str) throws IOException {
+            		queue.offer(str);
+            		super.write(str);
+            	}
+            };
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -115,4 +127,17 @@ public class ATLogger {
         log_file_writer.write(date.toString() + " [DEBUG] " +  message + '\n');
         log_file_writer.flush();
     }
+    
+    public void printLastLines(){
+    	
+    	Main.println("###################################");
+    	Main.println("# Printing recent lines of log");
+    	
+    	for (String s: queue){
+    		Main.println("# " + s);
+    	}
+    	
+    	
+    }
+    
 }

@@ -185,6 +185,8 @@ public class Main {
         			
         			if (collection == null || collection.size() == 0){
         				Main.println("Error fetching collection");
+        				logger.printLastLines();
+        				System.exit(-1);
         			}
         			
         			int count = 0;
@@ -218,6 +220,12 @@ public class Main {
         			Main.println("");
         		}
         }
+        
+        if (toget.size() < 1){
+			Main.println("Nothing selected to download");
+			System.exit(-1);
+        }
+        	
         
         /////////////////////////////////////////////////
         // now toget has the files we are looking for
