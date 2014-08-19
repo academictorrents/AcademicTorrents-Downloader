@@ -18,6 +18,7 @@ import org.gudy.azureus2.core3.download.DownloadManager;
 import org.gudy.azureus2.core3.peer.PEPeer;
 
 import com.aelitis.azureus.core.AzureusCore;
+import com.aelitis.azureus.core.AzureusCoreException;
 import com.aelitis.azureus.core.AzureusCoreFactory;
 
 	public class VuzeATDownloadEngineStatus implements Runnable{
@@ -33,6 +34,15 @@ import com.aelitis.azureus.core.AzureusCoreFactory;
 					if (managers.size() < 1){
 						Main.println("Download Halted!");
 						downloadCompleted = true;
+						
+						try {
+							core.requestStop();
+						} catch (AzureusCoreException aze) {
+							Main.println("Could not end session gracefully - forcing exit.....");
+							core.stop();
+						}
+						
+						
 						break;								
 					}
 					

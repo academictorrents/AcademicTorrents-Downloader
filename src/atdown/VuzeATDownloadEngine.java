@@ -177,7 +177,7 @@ class DownloadStateListener implements DownloadManagerListener {
 			Main.println("Initializing.." + manager.getDisplayName());
 			break;
 		case DownloadManager.STATE_FINISHING:
-			Main.println("Finishing.." + manager.getDisplayName());
+			//Main.println("Finishing.." + manager.getDisplayName());
 			break;
 		default :
 			//Main.println("state:" + state);
