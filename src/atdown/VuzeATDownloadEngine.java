@@ -176,6 +176,9 @@ class DownloadStateListener implements DownloadManagerListener {
 		case DownloadManager.STATE_INITIALIZING:
 			Main.println("Initializing.." + manager.getDisplayName());
 			break;
+		case DownloadManager.STATE_FINISHING:
+			Main.println("Finishing.." + manager.getDisplayName());
+			break;
 		default :
 			//Main.println("state:" + state);
 			
@@ -188,8 +191,19 @@ class DownloadStateListener implements DownloadManagerListener {
 	
 	
 	public void downloadComplete(DownloadManager manager) {
-		Main.println("Download Completed");
+		Main.println("\nDownload Completed\n");
+		
 		AzureusCore core = AzureusCoreFactory.getSingleton();
+		
+		try {
+			core.getGlobalManager().removeDownloadManager(manager,false, false);
+		} catch (AzureusCoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GlobalManagerDownloadRemovalVetoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// if done
 		if (core.getGlobalManager().isSeedingOnly()){
