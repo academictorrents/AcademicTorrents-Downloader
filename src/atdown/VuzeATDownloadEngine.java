@@ -193,6 +193,12 @@ class DownloadStateListener implements DownloadManagerListener {
 	public void downloadComplete(DownloadManager manager) {
 		Main.println("\nDownload Completed\n");
 		
+		if (Main.keepsharing){
+			Main.println("\n-s Will keep sharing\n");
+			return;
+		}
+		
+		
 		AzureusCore core = AzureusCoreFactory.getSingleton();
 		
 		try {

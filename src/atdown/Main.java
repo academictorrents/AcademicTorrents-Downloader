@@ -36,6 +36,7 @@ public class Main {
 	final public static int TIMEOUT = 3000;
 	final public static String ATDIR = System.getProperty("user.home") + "/.atdown/";
 	
+	public static boolean keepsharing = false;
 	private static PrintStream stdout = System.out;
 	private static PrintStream stderr = System.err;
 	
@@ -66,6 +67,10 @@ public class Main {
 		
 		if (!argsl.remove("-v")){
 			hardLogging();
+		}
+		
+		if (argsl.remove("-s")){
+			keepsharing = true;
 		}
 		
 		
@@ -109,6 +114,8 @@ public class Main {
 			Main.println("Usage: atdown ls // list connections");
 			Main.println("Usage: atdown INFOHASH // download entry");
 			Main.println("Usage: atdown INFOHASH ls // list contents of entry");
+			Main.println("Usage: atdown ... -v // verbose");
+			Main.println("Usage: atdown ... -s // keep sharing");
 			System.exit(0);
 		}
 		
